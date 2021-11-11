@@ -10,4 +10,8 @@ spec:
     image: debian
     command: ["printenv"]
     args: ["HOSTNAME", "KUBERNETES_PORT"]
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
   restartPolicy: OnFailure

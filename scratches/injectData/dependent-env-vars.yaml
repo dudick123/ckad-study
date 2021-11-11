@@ -11,6 +11,10 @@ spec:
         - sh
         - -c
       image: busybox
+      resources:
+        limits:
+          memory: "128Mi"
+          cpu: "500m"
       env:
         - name: SERVICE_PORT
           value: "80"

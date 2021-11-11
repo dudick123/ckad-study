@@ -15,6 +15,10 @@ spec:
       containers:
       - name: patch-demo-ctr
         image: nginx
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
       tolerations:
       - effect: NoSchedule
         key: dedicated

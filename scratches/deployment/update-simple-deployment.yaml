@@ -16,3 +16,7 @@ spec:
         image: nginx:1.16.1 # update the image
         ports:
         - containerPort: 80
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
