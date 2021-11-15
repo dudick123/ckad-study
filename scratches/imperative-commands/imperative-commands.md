@@ -1,5 +1,6 @@
 # 02 Pods
 ```
+kubectl run nginx --image=nginx --restart=Never
 kubectl run frontend - --image=nginx --restart=Never --port=80
 kubectl run frontend - --image=nginx --restart=Never --port=80 -o yaml --dry-run=client > simple-pod-yaml
 kubectl create -f .\pod.yaml
