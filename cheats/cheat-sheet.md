@@ -197,6 +197,12 @@ kubectl exec deploy/my-deployment -- ls                   # run command in first
 
 # CKAD Imperative Commands
 
+## 01 Other
+```
+kubectl get all --all-namespaces
+
+```
+
 ## 02 Pods
 ```
 kubectl run nginx --image=nginx --restart=Never
@@ -208,6 +214,7 @@ kubectl get pod frontend
 kubectl describe pod frontend 
 kubectl describe pod frontend -o wide
 kubectl describe pod frontend -o yaml
+kubectl get pods --all-namespaces
 kubectl delete -f .\pod.yaml
 
 kubectl run hazelcast --image=hazelcast/hazelcast --restart=Never --port=5701 --env="DNS_DOMAIN=cluster" --labels="app=hazelcast,env=prod"
@@ -220,6 +227,19 @@ kubectl run my-shell --rm -i --tty --image ubuntu -- bash
 
 kubectl run -i --tty --rm debug --image=busybox --restart=Never -- sh
 ```
+
+### Port Forwarding
+```
+# Listen on ports 5000 and 6000 locally, forwarding data to/from ports 5000 and 6000 in the pod
+kubectl port-forward pod/mypod 5000 6000
+
+# Listen on ports 5000 and 6000 locally, forwarding data to/from ports 5000 and 6000 in a pod selected by the deployment
+kubectl port-forward deployment/mydeployment 5000 6000
+
+# Listen on port 8443 locally, forwarding to the targetPort of the service's port named "https" in a pod selected by the service
+  kubectl port-forward service/myservice 8443:https
+```
+
 ## 02 Namespaces
 namespace alias: ns
 ```
@@ -249,30 +269,50 @@ kubectl exec configure-pod -- env
 ```
 ## 06 - Pod Design
 
-###  Labels
+###  Labels and annotations
 
 ```
-kubectl run labled-pod --image=nginx --restart=Never --labels=tier=backend,env=dev
-kubectl run labled-pod --image=nginx --restart=Never --labels=tier=backend,env=dev -o yaml --dry-run=client >> 06-simple-pod-label.yaml
+kubectl run labeled-pod --image=nginx --restart=Never --labels=tier=backend,env=dev
+kubectl run labeled-pod-front --image=nginx --restart=Never --labels=tier=frontend,env=dev
+kubectl run labeled-pod --image=nginx --restart=Never --labels=tier=backend,env=dev -o yaml --dry-run=client >> 06-simple-pod-label.yaml
 kubectl apply -f 06-simple-pod-label.yaml
 kubectl get pods --show-labels
-kubectl get pods -l 'env=dev'
-kubectl get pods -labels 'env in (dev)'
-kubectl label pod labled-pod region=us
-kubectl label pod labled-pod region=useat1 --overwrite
+kubectl get pods -l 'env=dev' -L env
+kubectl get pods -l 'env in (dev)' -L env
+kubectl label pod labeled-pod region=us
+kubectl label pod labeled-pod region=useast1 --overwrite
 kubectl get pods -l 'env in (dev, prod)',region=useast1
+kubectl get pods --all-namespaces --show-labels
+kubectl get pods --all-namespaces -l 'env' -L env,tier
+kubectl get pods -L region
+kubectl annotate pod labeled-pod on-call='8037083648'
+kubectl describe pod labeled-pod | grep -C 3 annotations
 kubectl delete -f 06-simple-pod-label.yaml
 ```
 ### Deployments
 ```
 kubectl create deployment my-deploy --image=nginx:1.14.2
 kubectl create deployment my-deploy --image=nginx:1.14.2 -o yaml --dry-run=client > 06-simple-deployment.yaml
+kubectl apply -f .\06-simple-deployment.yaml
 kubectl get deployments
 kubectl get deployment my-deploy
+kubectl get deployments -l 'app=my-deploy' -L app --show-labels
 kubectl describe deployment my-deploy
+kubectl get deployments,pods,replicasets --show-labels
+kubectl get deployments,pods,replicasets -l 'app=my-deploy' --show-labels
+kubectl get deployments,pods,replicasets -l 'app=my-deploy' -L App --show-labels
 kubectl rollout history deployment my-deploy
 kubectl set image deployment my-deploy nginx=nginx:1.19.2
-
+kubectl rollout history deployment my-deploy
+kubectl rollout status deployment my-deploy
+kubectl rollout history deployment my-deploy --revision=2
+kubectl rollout undo deployment my-deploy --to-revision=1
+kubectl rollout history deployment my-deploy
+kubectl scale deployment my-deploy --replicas=5
+kubectl get pods -l 'app=my-deploy' -L app
+kubectl autoscale deployment my-deploy --cpu-percent=70 --min=2 --max=8
+kubectl get hpa
+kubectl describe hpa my-deploy
 ```
 
 
