@@ -241,7 +241,7 @@ kubectl port-forward service/myservice 8443:https
 
 ```
 
-## 02 Namespaces 123
+## 02 Namespaces
 namespace alias: ns
 ```
 //
