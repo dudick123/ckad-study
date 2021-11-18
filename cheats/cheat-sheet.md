@@ -256,7 +256,7 @@ kubectl delete -f .\simple-namespace.yaml
 ```
 
 
-## 03 ConfigMaps test
+## 03 ConfigMaps
 ```
 kubectl create configmap db-config --from-literal=db=staging
 kubectl create configmap db-config --from-env-file=config.env
