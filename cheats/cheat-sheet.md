@@ -237,7 +237,8 @@ kubectl port-forward pod/mypod 5000 6000
 kubectl port-forward deployment/mydeployment 5000 6000
 
 # Listen on port 8443 locally, forwarding to the targetPort of the service's port named "https" in a pod selected by the service
-  kubectl port-forward service/myservice 8443:https
+kubectl port-forward service/myservice 8443:https
+
 ```
 
 ## 02 Namespaces
@@ -261,10 +262,9 @@ kubectl create configmap db-config --from-literal=db=staging
 kubectl create configmap db-config --from-env-file=config.env
 kubectl create configmap db-config --from-file=config.txt
 
-kubectl create configmap db-config --from-literal=db=staging -o yaml --dry-run=client >> simple-configmap.yaml
+kubectl create configmap db-config --from-literal=db=staging -o yaml --dry-run=client >> 03-from-literal-configmap.yaml
+kubectl create configmap db-config --from-file=02-config.txt -o yaml --dry-run=client >> 03-from-file-configmap.yaml
 
-kubectl describe map
-kubectl exec configure-pod -- env
 
 ```
 ## 06 - Pod Design
@@ -313,6 +313,13 @@ kubectl get pods -l 'app=my-deploy' -L app
 kubectl autoscale deployment my-deploy --cpu-percent=70 --min=2 --max=8
 kubectl get hpa
 kubectl describe hpa my-deploy
+```
+
+### Jobs and CronJobs
+```
+kubectl create job my-job --image=busybox --dry-run=client -o yaml > batch_job.yaml
+kubectl create cronjob alpine --schedule="* * * * *" --image=alpine -- sleep 10  --restart=OnFailure --dry-run=client -o yaml > cron_job.yaml
+
 ```
 
 
