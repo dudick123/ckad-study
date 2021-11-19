@@ -203,6 +203,13 @@ kubectl get all --all-namespaces
 
 ```
 
+## 01 Context Config
+```
+# create a new context and use it
+kubectl config set-context challenge-context --user=admin --namespace=challenge --cluster=kubernetes-the-alta3-way
+kubectl config use-context challenge-context 
+```
+
 ## 02 Pods
 ```
 kubectl run nginx --image=nginx --restart=Never
