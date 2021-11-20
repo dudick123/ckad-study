@@ -1,5 +1,32 @@
 # CKAD Cheat Sheet
 
+## CKAD Testing Objectives
+### Application Design and Build - 20%
+- Define build and modify container images
+- Understand Jobs and CronJobs
+- Understand multi-container Pod design and patterns such as sidecar and init containers
+- Utilize persistent and ephemeral volumes
+### Application Development - 20%
+- Use Kubernetes primitives to implement common deployment strategies such as blue/green and canary
+- Understand Deployments and how to perform rolling updates
+- Use the Helm package manager to deploy existing packages
+### Application Observability and Maintenance - 15%
+- Understand API deprecations
+- Implement probes and health checks
+- Use provided tools to monitor Kubernetes
+- Utilize container logs
+- Debugging in Kubernetes
+### Application Environment, Configuration and Security - 25%
+- Discover and use resources that extend Kubernetes - Customer Resource Definitions
+- Understand authentication, authorization, and admission control
+- Understand defining resource requirements, limits and qoutas
+- Understand ConfigMaps
+- Understand ServiceAccounts
+- Udnerstand Security Contexts
+### Services and Networking - 20%
+- Demonstrate basic undersntanding of Network Policies
+- Provide and troubleshoot acceess to applications via services
+- Use ingress rules to expose applications
 ## Creating Objects
 
 ```
@@ -199,6 +226,7 @@ kubectl exec deploy/my-deployment -- ls                   # run command in first
 
 ## 01 Other
 ```
+kubectl api-resources
 kubectl get all --all-namespaces
 
 ```
@@ -292,7 +320,7 @@ kubectl get pods -l 'env in (dev, prod)',region=useast1
 kubectl get pods --all-namespaces --show-labels
 kubectl get pods --all-namespaces -l 'env' -L env,tier
 kubectl get pods -L region
-kubectl annotate pod labeled-pod on-call='8037083648'
+kubectl annotate pod labeled-pod on-call='8885551212'
 kubectl describe pod labeled-pod | grep -C 3 annotations
 kubectl delete -f 06-simple-pod-label.yaml
 ```
@@ -300,6 +328,7 @@ kubectl delete -f 06-simple-pod-label.yaml
 ```
 kubectl create deployment my-deploy --image=nginx:1.14.2
 kubectl create deployment my-deploy --image=nginx:1.14.2 -o yaml --dry-run=client > 06-simple-deployment.yaml
+kubectl expose deployment frontend --type=NodePort --name=frontend-service --port=8080 --target-port=8080 --dry-run -o yaml 
 kubectl apply -f .\06-simple-deployment.yaml
 kubectl get deployments
 kubectl get deployment my-deploy
@@ -326,10 +355,24 @@ kubectl describe hpa my-deploy
 ```
 kubectl create job my-job --image=busybox --dry-run=client -o yaml > batch_job.yaml
 kubectl create cronjob alpine --schedule="* * * * *" --image=alpine -- sleep 10  --restart=OnFailure --dry-run=client -o yaml > cron_job.yaml
-
 ```
-
-
+## 07 Services & Networking
+### Services
+```
+kubectl create service clusterip nginx-service --tcp=80:80
+kubectl create service clusterip nginx-service --tcp=80:80 --dry-run=client -o yaml > 07-simple-service.yaml
+kubectl delete service nginx-service
+kubectl delete service nginx-service
+kubectl run nginx --image=nginx --restart=Never --port=80 --expose
+kubectl create deployment nginx-deploy --image=nginx --port=80
+kubectl expose deployment nginx-deploy --name=nginx-service --port=80 --target-port=80
+kubectl expose deployment nginx-deploy --name=nginx-service --port=80 --target-port=80
+kubectl expose deployment nginx-deploy --name=nginx-service --type=NodePort --port=80 --target-port=80
+kubectl expose deployment nginx-deploy  --port=80 --target-port=80 --dry-run=client -o yaml > 07-simple-service-clusterip.yaml
+kubectl expose deployment nginx-deploy --name=nginx-service --type=NodePort --port=80 --target-port=80 --dry-run=client -o yaml > 07-simple-service-nodeport.yaml
+```
+### Networking Policies
+Network Policies cannot be created via declarative command.
 
 
 

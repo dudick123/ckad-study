@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: persistentclaimchallenge
+spec:
+  storageClassName: challenge # I was sneaky in the challenge... I told you what the storageclass for the PV
+                              # was... which means you had to set that for the PVC as well
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi

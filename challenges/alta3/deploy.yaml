@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: challengedeploy
+    challenge: met
+  annotations:
+    kubernetes: is
+    super: easy
+    i: am
+    so: awesome
+  name: challengedeploy
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: challengedeploy
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: challengedeploy
+    spec:
+      containers:
+      - image: nginx:latest
+        name: nginx
+        resources: {}
+      nodeName: node-3
+status: {}
