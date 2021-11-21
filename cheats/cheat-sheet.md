@@ -229,6 +229,29 @@ kubectl exec deploy/my-deployment -- ls                   # run command in first
 kubectl api-resources
 kubectl get all --all-namespaces
 
+
+```
+
+### Creating a Manfiest From Scratch
+```
+kubectl --help
+kubectl api-resources
+kubectl api-versions
+kubectl explain <Kind>
+kubectl explain <Kind>.spec
+kubectl explain <Kind>.spec.subtype
+kubectl explain <Kind> --recursive
+
+kubectl explain Pod
+kubectl explain Pod.spec
+kubectl explain Pod.spec.volumes
+kubectl explain Pod --recursive
+
+kubectl create deployment web --image=nginx --dry-run=client -o yaml > web.yam
+kubectl apply -f web.yaml --server-dry-run 
+kubectl diff -f web.yaml
+
+
 ```
 
 ## 01 Context Config
@@ -240,6 +263,10 @@ kubectl config use-context challenge-context
 
 ## 02 Pods
 ```
+kubectl api-resourcees
+kubectl explain Pod.spec
+kubectl explain Pod --recursive
+
 kubectl run nginx --image=nginx --restart=Never
 kubectl run frontend - --image=nginx --restart=Never --port=80
 kubectl run frontend - --image=nginx --restart=Never --port=80 -o yaml --dry-run=client > simple-pod-yaml
@@ -279,7 +306,12 @@ kubectl port-forward service/myservice 8443:https
 ## 02 Namespaces
 namespace alias: ns
 ```
-//
+## API/Manifest Info
+kubectl api-resources
+kubectl explain NameSpace.spec
+kubectl explain NameSpace --recursive
+
+## Namepace Creation
 kubectl create ns code-red
 kubectl create ns code-red -o yaml --dry-run=client >> simple-namespace.yaml
 kubectl get ns
@@ -290,9 +322,14 @@ kubectl delete -f .\simple-namespace.yaml
 
 ```
 
-
-## 03 ConfigMaps
+## 03 Configuration
+### ConfigMaps
 ```
+## API/Manifest Info
+kubectl api-resources
+kubectl explain ConfigMap.spec
+kubectl explain ConfigMap --recursive
+
 kubectl create configmap db-config --from-literal=db=staging
 kubectl create configmap db-config --from-env-file=config.env
 kubectl create configmap db-config --from-file=config.txt
@@ -300,8 +337,24 @@ kubectl create configmap db-config --from-file=config.txt
 kubectl create configmap db-config --from-literal=db=staging -o yaml --dry-run=client >> 03-from-literal-configmap.yaml
 kubectl create configmap db-config --from-file=02-config.txt -o yaml --dry-run=client >> 03-from-file-configmap.yaml
 
+```
+
+### Secrets
+```
+## API/Manifest Info
+kubectl api-resources
+kubectl explain Secret.spec
+kubectl explain Secret --recursive
 
 ```
+
+## 04 Mutli-Container Pods
+
+
+## 05 Observability
+
+
+
 ## 06 - Pod Design
 
 ###  Labels and annotations
