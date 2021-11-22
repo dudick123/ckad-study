@@ -261,7 +261,9 @@ kubectl config set-context challenge-context --user=admin --namespace=challenge 
 kubectl config use-context challenge-context 
 ```
 
-## 02 Pods
+## 02 Core Concepts
+
+### Pods
 ```
 kubectl api-resourcees
 kubectl explain Pod.spec
@@ -289,21 +291,7 @@ kubectl run my-shell --rm -i --tty --image ubuntu -- bash
 
 kubectl run -i --tty --rm debug --image=busybox --restart=Never -- sh
 ```
-
-### Port Forwarding
-```
-# Listen on ports 5000 and 6000 locally, forwarding data to/from ports 5000 and 6000 in the pod
-kubectl port-forward pod/mypod 5000 6000
-
-# Listen on ports 5000 and 6000 locally, forwarding data to/from ports 5000 and 6000 in a pod selected by the deployment
-kubectl port-forward deployment/mydeployment 5000 6000
-
-# Listen on port 8443 locally, forwarding to the targetPort of the service's port named "https" in a pod selected by the service
-kubectl port-forward service/myservice 8443:https
-
-```
-
-## 02 Namespaces
+### Namespaces
 namespace alias: ns
 ```
 ## API/Manifest Info
@@ -319,6 +307,21 @@ kubectl get ns code-red
 kubectl describe ns code-red
 kubectl delete ns code-red
 kubectl delete -f .\simple-namespace.yaml
+
+```
+### Port Forwarding
+```
+# Get Help
+kubectl port-forward --help
+
+# Listen on ports 5000 and 6000 locally, forwarding data to/from ports 5000 and 6000 in the pod
+kubectl port-forward pod/mypod 5000 6000
+
+# Listen on ports 5000 and 6000 locally, forwarding data to/from ports 5000 and 6000 in a pod selected by the deployment
+kubectl port-forward deployment/mydeployment 5000 6000
+
+# Listen on port 8443 locally, forwarding to the targetPort of the service's port named "https" in a pod selected by the service
+kubectl port-forward service/myservice 8443:https
 
 ```
 
@@ -350,6 +353,15 @@ kubectl explain Secret --recursive
 
 ## 04 Mutli-Container Pods
 
+```
+## API/Manifest Info
+kubectl api-resources
+kubectl explain Pod.spec
+kubectl explain Pod.spec.containers
+kubectl explain Pod --recursive
+
+```
+
 
 ## 05 Observability
 
@@ -379,6 +391,17 @@ kubectl delete -f 06-simple-pod-label.yaml
 ```
 ### Deployments
 ```
+## API/Manifest Info
+kubectl api-resources
+kubectl explain Deployment
+kubectl explain Deployment.spec
+kubectl explain Deployment --recursive
+
+## Rollouts
+## minimum = replicas - maxUnavailable
+## maximum = replicas + maxSurge
+## in flight = maxUnavailable + maxSuge
+
 kubectl create deployment my-deploy --image=nginx:1.14.2
 kubectl create deployment my-deploy --image=nginx:1.14.2 -o yaml --dry-run=client > 06-simple-deployment.yaml
 kubectl expose deployment frontend --type=NodePort --name=frontend-service --port=8080 --target-port=8080 --dry-run -o yaml 
@@ -406,12 +429,23 @@ kubectl describe hpa my-deploy
 
 ### Jobs and CronJobs
 ```
+## API/Manifest Info
+kubectl api-resources
+kubectl explain Job
+kubectl explain Job.spec
+kubectl explain Job --recursive
+
 kubectl create job my-job --image=busybox --dry-run=client -o yaml > batch_job.yaml
 kubectl create cronjob alpine --schedule="* * * * *" --image=alpine -- sleep 10  --restart=OnFailure --dry-run=client -o yaml > cron_job.yaml
 ```
 ## 07 Services & Networking
 ### Services
 ```
+kubectl api-resources
+kubectl explain Service
+kubectl explain Service.spec
+kubectl explain Service --recursive
+
 kubectl create service clusterip nginx-service --tcp=80:80
 kubectl create service clusterip nginx-service --tcp=80:80 --dry-run=client -o yaml > 07-simple-service.yaml
 kubectl delete service nginx-service
