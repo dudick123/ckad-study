@@ -1,0 +1,147 @@
+***************************************************************************************************
+*                                                                                                 *
+* Subject:  Using Dry-Run Option                                                                  *
+*                                                                                                 *
+* Author: Srinath Challa | Kubernetes SME | Udemy                                                 *
+*                                                                                                 *
+* Connect me on:                                                                                  *    
+* --------------                                                                                  *
+* https://www.udemy.com/user/srinathchalla/                                                       *
+* https://www.linkedin.com/in/srinathchalla/                                                      *
+* https://www.youtube.com/srinathchalla                                                           *
+*                                                                                                 *
+***************************************************************************************************
+
+There are two ways to create and manage resources in Kubernetes. One using Imperatively and other using Declaratively.
+
+Imperative is the way we manage resources using a command. In Declarative, we write YAML file.
+
+We can perform most of the tasks in the CKA/CKAD Exam using "Imperative" commands. By doing this, it saves lot of time.
+
+Sometimes, you need YAML file. In this case, Instead of Writing YAML file manually, you can generate it using dry-run=client option as mentioned below.
+
+You can use the --dry-run=client flag to preview the object that would be sent to your cluster, without really submitting it.
+
+
+***************************************************************************************************
+
+Pod:
+----
+kubectl run nginx --image=nginx --dry-run=client -o yaml
+
+***************************************************************************************************
+
+Deployment: 
+------------
+# Create a Deployment with the specified name.
+kubectl create deploy [NAME] --image=nginx --dry-run=client -o yaml
+
+
+***************************************************************************************************
+
+Service: 
+--------
+Create a Service using specified subcommand.
+kubectl create service [TYPE] [NAME] [OPTIONS] --dry-run=client -o yaml
+
+# Dry-Run: Create a new ClusterIP service named my-cs
+kubectl create service clusterip my-cs --tcp=5678:8080 --dry-run=client -o yaml
+
+# Dry-Run: Create a new ClusterIP service named my-cs (in headless mode)
+kubectl create service clusterip my-cs --clusterip="None" --dry-run=client -o yaml
+
+# Dry-Run: Create a new NodePort service named my-ns
+kubectl create service nodeport my-ns --tcp=5678:8080 --dry-run=client -o yaml
+
+
+***************************************************************************************************
+
+Configmap: 
+----------
+Create a ConfigMap from a local file, directory or literal value.
+
+# Dry-Run Example: Create a new configmap named my-config with key1=config1 and key2=config2
+kubectl create configmap my-config --from-literal=key1=config1 --from-literal=key2=config2 --dry-run=client -o yaml
+
+
+***************************************************************************************************
+
+Secret: 
+-------
+Create a Secret using specified subcommand.
+
+# Dry-Run: Create a new secret named my-secret with key1=supersecret and key2=topsecret
+kubectl create secret generic my-secret --from-literal=key1=supersecret --from-literal=key2=topsecret --dry-run=client -o yaml
+
+***************************************************************************************************
+
+Job: 
+----
+Create a Job with the specified name.
+
+# Dry-Run: Create a job with command
+kubectl create job my-job --image=busybox -- date --dry-run=client -o yaml
+
+***************************************************************************************************
+
+Cronjob: 
+--------
+Create a CronJob with the specified name.
+
+# Dry-Run: Create a cronjob
+kubectl create cronjob my-job --image=busybox --schedule="*/1 * * * *" --dry-run=client -o yaml
+
+***************************************************************************************************
+
+Namespace: 
+----------
+Create a Namespace with the specified name.
+
+# Dry-Run: Create a new namespace named my-namespace
+kubectl create namespace my-namespace --dry-run=client -o yaml
+
+***************************************************************************************************
+
+Serviceaccount: 
+---------------
+Create a ServiceAccount with the specified name
+
+# Dry-Run: Create a new Service Account
+kubectl create sa my-app-sa --dry-run=client -o yaml
+
+***************************************************************************************************
+
+Clusterrole: 
+------------
+Create a ClusterRole.
+
+# Dry-Run: Create a ClusterRole named "pod-reader" that allows user to perform "get", "watch" and "list" on pods
+kubectl create clusterrole pod-reader --verb=get,list,watch --resource=pods --dry-run=client -o yaml
+
+
+***************************************************************************************************
+
+Clusterrolebinding: 
+-------------------
+Create a ClusterRoleBinding for a particular ClusterRole.
+
+# Dry-Run: Create a ClusterRoleBinding for user1, user2, and group1 using the cluster-admin ClusterRole
+kubectl create clusterrolebinding cluster-admin --clusterrole=cluster-admin --user=user1 --user --dry-run=client -o yaml
+
+***************************************************************************************************
+
+Role: 
+------
+Create a Role with single rule.
+
+# Dry-Run: Create a Role named "pod-reader" that allows user to perform "get", "watch" and "list" on pods
+kubectl create role pod-reader --verb=get --verb=list --verb=watch --resource=pods --dry-run=client -o yaml
+
+***************************************************************************************************
+
+Rolebinding: 
+------------
+# Dry-Run: Create a RoleBinding for user1, user2, and group1 using the admin ClusterRole
+kubectl create rolebinding admin --clusterrole=admin --user=user1 --user=user2 --group=group1 --dry-run=client -o yaml
+
+***************************************************************************************************

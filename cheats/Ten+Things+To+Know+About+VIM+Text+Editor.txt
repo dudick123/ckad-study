@@ -1,0 +1,147 @@
+***************************************************************************************************
+*                                                                                                 *
+* Subject: Must Know Things about "VIM" Linux Text Editor                                         *
+*                                                                                                 *
+* Author: Srinath Challa | Kubernetes SME | Udemy                                                 *
+*                                                                                                 *
+* Created On: Feb 2021                                                                            *
+*                                                                                                 *
+* Connect me on:                                                                                  *    
+* --------------                                                                                  *
+* https://www.udemy.com/user/srinathchalla/                                                       *
+* https://www.linkedin.com/in/srinathchalla/                                                      *
+* https://www.youtube.com/srinathchalla                                                           *
+*                                                                                                 *
+***************************************************************************************************
+
+
+***************************************************************************************************
+
+1. VIM Modes:
+-------------
+Inset Mode:   Press "i"
+Command Mode: Press "Esc" key
+
+
+***************************************************************************************************
+
+
+2. VIM Workflow:
+---------------
+
+OPEN - EDIT - SAVE and/or QUIT
+
+1. OPEN a new or existing file with "vim filename".
+2. Type "i" to switch into INSERT mode so that you can start editing the file.
+3. "Enter or modify" the text with your file.
+4. Once you're done, press the escape key "Esc" to get out of insert mode and back to "command mode".
+5. Type :wq to save and exit your file.
+
+
+***************************************************************************************************
+
+
+3. Custom VIM Configuration:
+----------------------------
+
+vi ~/.vimrc
+
+#My VIM Config: Adding below lines to  ~/.vimrc
+
+set number	     # Show Line Numbers
+set et	             # To insert space characters whenever the tab key is pressed
+set sw=2 ts=2 sts=2 
+
+# sw=2  Shiftwidth of tab from default 8 to 2 spaces
+# ts=2  Set tabstop to 2 spaces
+# sts=2 Set softtabstop to 2 spaces
+
+***************************************************************************************************
+
+
+4. Cursor Movement:
+------------------
+0 	- Places the cursor to the start of the line
+$ 	- Places the cursor end of line
+
+gg 	- Places the cursor at the start of the file
+G  	- Places the cursor at the end of the file
+# 	- Where # is the number of a line, this command takes you to the line specified
+
+
+***************************************************************************************************
+
+
+5. Copy:
+--------
+y    -> Copy current line
+5y   -> Copy 5 lines from current line
+(n)y -> Copy "n" lines from current line
+
+
+***************************************************************************************************
+
+
+6. Paste:
+---------
+P -> paste content before cursor
+p -> paster content after cursor
+
+
+***************************************************************************************************
+
+
+7. Delete:
+----------
+x     - Deletes a single character
+dw    - Deletes a word
+
+dd    - Deletes a line of text
+5dd   - Delete 5 lines from current line
+(n)dd - Delete "n" lines from current line
+
+dgg   - Deletes everything from where your cursor is to the beginning of the file
+dG    - Deletes everything from where your cursor is to the end of the file
+
+
+***************************************************************************************************
+
+
+8. Search:
+----------
+
+/[keyword] - Searches for text in the document where keyword is whatever keyword, phrase or string of characters you're looking for
+
+?[keyword] - Searches previous text for your keyword, phrase or character string
+
+n		   - "Searches" your text "again" in whatever direction your last search was
+
+N - Searches your text again in the opposite direction
+
+:%s/[pattern]/[replacement]/g - This replaces all occurrences of a pattern without confirming each one
+
+:%s/[pattern]/[replacement]/gc - Replaces all occurrences of a pattern and confirms each one
+
+
+***************************************************************************************************
+
+
+9. Undo:
+--------
+u -> undo last action
+
+
+***************************************************************************************************
+
+
+10. Save and/or Quit:
+-------------------
+:wq - Save your file and close Vim
+:q! - Quit without first saving the file you were working on
+
+
+***************************************************************************************************
+
+
+
+

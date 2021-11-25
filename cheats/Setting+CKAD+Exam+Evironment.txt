@@ -1,0 +1,83 @@
+***************************************************************************************************
+*                                                                                                 *
+* Subject: Setting up CKAD Exam Environment                                                   *
+*                                                                                                 *
+* Author: Srinath Challa | Kubernetes SME | Udemy                                                 *
+*                                                                                                 *
+* Connect me on:                                                                                  *    
+* --------------                                                                                  *
+* https://www.udemy.com/user/srinathchalla/                                                       *
+* https://www.linkedin.com/in/srinathchalla/                                                      *
+* https://www.youtube.com/srinathchalla                                                           *
+*                                                                                                 *
+***************************************************************************************************
+
+Note: CKAD Exam Consists of multiple nodes and clusters. But, most of the time, you will be on jump/base node from where you will be connecting other clusters using the command (use-context) in the question. 
+Following commands should execute on Base node. Can be executed on other nodes as and when needed.
+
+
+***************************************************************************************************
+
+1. Change to Root user:
+-----------------------
+sudo su -
+
+
+***************************************************************************************************
+
+
+2. Enabling Auto-Completion:
+----------------------------
+source <(kubectl completion bash)                      # Temporary Config
+echo "source <(kubectl completion bash)" >> ~/.bashrc  # Permanent Config
+
+
+***************************************************************************************************
+
+
+3. Setting Aliases:
+-------------------
+alias k="kubectl“			   # Setting Alias for kubectl
+alias kp="kubectl get pods -o wide“        # Setting Alias to Display “Pods”
+alias kd="kubectl get deployment -o wide“  # Setting Alias to Display “Deployment”  
+alias ks="kubectl get svc -o wide“         # Setting Alias to Display “Services”
+alias kc=‘kubectl config get-contexts’     # To check current context
+
+
+***************************************************************************************************
+
+
+4. Custom VIM Configuration:
+----------------------------
+
+vi ~/.vimrc
+
+#My VIM Config: Adding below lines to  ~/.vimrc
+
+set number	     # Show Line Numbers
+set et	             # To insert space characters whenever the tab key is pressed
+set sw=2 ts=2 sts=2 
+
+# sw=2  Shiftwidth of tab from default 8 to 2 spaces
+# ts=2  Set tabstop to 2 spaces
+# sts=2 Set softtabstop to 2 spaces
+
+
+***************************************************************************************************
+
+5. Create CKA/CKAD Exam Working Directory:
+-----------------------------------------
+mkdir my-cka-exam
+
+
+***************************************************************************************************
+
+6. Get Familiar with Cluster-Setup:
+-----------------------------------
+kubectl get nodes
+kubectl get ns
+kubectl get pods -A
+kubectl config get-clusters
+kubectl config get-contexts
+
+***************************************************************************************************

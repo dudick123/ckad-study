@@ -368,6 +368,10 @@ kubectl explain Pod --recursive
 
 
 ## 06 - Pod Design
+```
+Caution: Liveness probes do not wait for readiness probes to succeed. If you want to wait before executing a liveness probe you should use initialDelaySeconds or a startupProbe.
+```
+
 
 ###  Labels and annotations
 
