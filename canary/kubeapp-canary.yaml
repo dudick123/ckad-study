@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: kubeapp
+  name: kubeapp-canary
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kubeapp
+      env: canary
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: kubeapp
+        env: canary
+    spec:
+      containers:
+      - image: nginx:1.20.2-alpine
+        name: nginx
+        ports:
+        - containerPort: 80
+        resources: {}
+status: {}

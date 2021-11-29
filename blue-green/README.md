@@ -8,8 +8,8 @@ kubectl apply -f deployment-blue.yaml
 
 kubectl get deployments
 
-kubectl expose deployment deployment-blue --name=service-glue-green --port=80 --target-port=80
-kubectl expose deployment deployment-blue --name=service-glue-green --port=80 --target-port=80 --dry-run=client -o yaml > service-blue-green.yaml
+kubectl expose deployment deployment-blue --name=service-blue-green --port=80 --target-port=80
+kubectl expose deployment deployment-blue --name=service-blue-green --port=80 --target-port=80 --dry-run=client -o yaml > service-blue-green.yaml
 
 kubectl apply -f service-blue-green.yaml 
 
