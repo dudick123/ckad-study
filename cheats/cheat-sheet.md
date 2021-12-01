@@ -30,11 +30,20 @@
 ## Creating Objects
 
 ```
-kubectl apply -f ./my-manifest.yaml            # create resource(s)
-kubectl apply -f ./my1.yaml -f ./my2.yaml      # create from multiple files
-kubectl apply -f ./dir                         # create resource(s) in all manifest files in dir
-kubectl apply -f https://git.io/vPieo          # create resource(s) from url
-kubectl create deployment nginx --image=nginx  # start a single instance of nginx
+# create resource(s)
+kubectl apply -f ./my-manifest.yaml            
+
+# create from multiple files
+kubectl apply -f ./my1.yaml -f ./my2.yaml      
+
+# create resource(s) in all manifest files in dir
+kubectl apply -f ./dir                         
+
+# create resource(s) from url
+kubectl apply -f https://git.io/vPieo
+
+# start a single instance of nginx
+kubectl create deployment nginx --image=nginx  
 
 # create a Job which prints "Hello World"
 kubectl create job hello --image=busybox -- echo "Hello World" 
@@ -42,19 +51,31 @@ kubectl create job hello --image=busybox -- echo "Hello World"
 # create a CronJob that prints "Hello World" every minute
 kubectl create cronjob hello --image=busybox   --schedule="*/1 * * * *" -- echo "Hello World"    
 
-kubectl explain pods                           # get the documentation for pod manifests
+# get the documentation for pod manifests
+kubectl explain pods                           
 
 ```
 
 ## Viewing and Finding Resources
 ```
 # Get commands with basic output
-kubectl get services                          # List all services in the namespace
-kubectl get pods --all-namespaces             # List all pods in all namespaces
-kubectl get pods -o wide                      # List all pods in the current namespace, with more details
-kubectl get deployment my-dep                 # List a particular deployment
-kubectl get pods                              # List all pods in the namespace
-kubectl get pod my-pod -o yaml                # Get a pod's YAML
+# List all services in the namespace
+kubectl get services                
+
+# List all pods in all namespaces
+kubectl get pods --all-namespaces
+             
+# List all pods in the current namespace, with more details             
+kubectl get pods -o wide                      
+
+# List a particular deployment
+kubectl get deployment my-dep 
+
+# List all pods in the namespace
+kubectl get pods                              
+
+# Get a pod's YAML
+kubectl get pod my-pod -o yaml                
 
 # Describe commands with verbose output
 kubectl describe nodes my-node
@@ -156,12 +177,15 @@ kubectl expose rc nginx --port=80 --target-port=8000
 # Update a single-container pod's image version (tag) to v4
 kubectl get pod mypod -o yaml | sed 's/\(image: myimage\):.*$/\1:v4/' | kubectl replace -f -
 
-kubectl label pods my-pod new-label=awesome                      # Add a Label
-kubectl annotate pods my-pod icon-url=http://goo.gl/XXBTWq       # Add an annotation
-kubectl autoscale deployment foo --min=2 --max=10                # Auto scale a deployment "foo"
+# Add a Label
+kubectl label pods my-pod new-label=awesome                      
+
+# Add an annotation
+kubectl annotate pods my-pod icon-url=http://goo.gl/XXBTWq       
+
+# Auto scale a deployment "foo"
+kubectl autoscale deployment foo --min=2 --max=10                
 ```
-
-
 
 ## Patching Resources
 ```
@@ -303,24 +327,50 @@ kubectl get all --all-namespaces
 
 ### Creating a Manfiest From Scratch
 ```
+# kubectl get help on all resources 
 kubectl --help
-kubectl api-resources
-kubectl api-versions
-kubectl explain <Kind>
-kubectl explain <Kind>.spec
-kubectl explain <Kind>.spec.subtype
-kubectl explain <Kind> --recursive
 
+# get a list of all api resources and types
+kubectl api-resources
+
+# get the api versions of the resource types
+kubectl api-versions
+
+# List the fields supported resources
+kubectl explain -h
+
+# explain the resource type
+kubectl explain <Type>
+
+# explain the type specification
+kubectl explain <Type>.spec
+
+# explain the type specification subtype
+kubectl explain <Type>.spec.subtype
+
+# recursively list all types and subtypes
+kubectl explain <Type> --recursive
+
+# explain the Pod type fields
 kubectl explain Pod
+
+# explain the Pod specification fields
 kubectl explain Pod.spec
+
+# explain the Pod specification, volumes field
 kubectl explain Pod.spec.volumes
+
+# for the Pod type, recursively list all fields
 kubectl explain Pod --recursive
 
-kubectl create deployment web --image=nginx --dry-run=client -o yaml > web.yam
+# create a deployment named web using the nginx image, using the dry run option and output the yaml to a file
+kubectl create deployment web --image=nginx --dry-run=client -o yaml > web.yaml
+
+# perform a dry run of the yaml file on the server
 kubectl apply -f web.yaml --server-dry-run 
+
+# perform a diff comparison of the current version and the yaml file
 kubectl diff -f web.yaml
-
-
 ```
 
 ## 01 Context Config
