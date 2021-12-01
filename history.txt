@@ -1,0 +1,1054 @@
+    1  git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions\n
+    2  pwd
+    3  nano ~/.zshrc
+    4  git -v
+    5  clear
+    6  ls
+    7  kubectl
+    8  clear
+    9  tmux
+   10  kubectl get nodes
+   11  kubectl get pods
+   12  kubectl get pods --all-namspaces
+   13  kubectl get pods --all-namespaces
+   14  clear
+   15  pwd
+   16  ls
+   17  cd Documents
+   18  ls
+   19  cd ..
+   20  cd source
+   21  ls
+   22  git clone https://github.com/dudick123/ckad-study.git
+   23  git status
+   24  ^M
+   25  softwareupdate --install-rosetta  --agree-to-license
+   26  xcode-select --install
+   27  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+   28  echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> /Users/brian/.zprofile
+   29  eval "$(/opt/homebrew/bin/brew shellenv)"
+   30  brew help
+   31  clear
+   32  brew install python@3.8 python@3.9
+   33  file /opt/homebrew/bin/python3.9
+   34  brew update && brew install azure-cli
+   35  az login
+   36  az account show
+   37  brew install go
+   38  go --help
+   39  brew install terraform
+   40  terraform -v
+   41  brew install iterm
+   42  clear
+   43  code .
+   44  clear
+   45  sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"\n
+   46  brew install --cask powershell
+   47  pwsh
+   48  clear
+   49  pwsh
+   50  exit
+   51  ls
+   52  clear
+   53  curl
+   54  curl -h
+   55  curl https://google.com
+   56  clear
+   57  git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting\n
+   58  nano ~/.zshrc
+   59  kubectl get pods --all-namespaces
+   60  kubectl get deployments
+   61  clear
+   62  exit
+   63  ls
+   64  cd source
+   65  ls
+   66  cd ckad-study
+   67  ls
+   68  cd cheats
+   69  ls
+   70  pwd
+   71  cd source
+   72  cd ckad-study
+   73  ls
+   74  clear
+   75  kubectle run nginx --image=nginx
+   76  kubectl run nginx --image=nginx
+   77  kubectl get pods
+   78  kubectl describe pod nginx
+   79  clear
+   80  source <(kubectl completion zsh)
+   81  echo "[[ $commands[kubectl] ]] && source <(kubectl completion zsh)" >> ~/.zshrc # add autocomplete permanently to your zsh shell
+   82  kubectl describe pod nginx
+   83  clear
+   84  kubectl describe pod nginx
+   85  kubectl describe pod nginx | less
+   86  docker -v
+   87  docker image ls
+   88  clear
+   89  tmux
+   90  clear
+   91  kubectl run nginx --image=nginx --restart=OnFailure --dry-run=client -o yaml > test_job.yaml
+   92  ls
+   93  vim test_job.yaml
+   94  clear
+   95  ls
+   96  kubectl create cronjob  nginx --image=nginx --restart=OnFailure --dry-run=client -o yaml > test_job.yaml
+   97  kubectl create cronjob  nginx --image=nginx --schedule="* * * * *" --restart=OnFailure --dry-run=client -o yaml > test_job.yaml
+   98  vim test_job.yaml
+   99  kubectl create job  nginx --image=nginx --restart=OnFailure --dry-run=client -o yaml > batch_job.yaml
+  100  kubectl create job  nginx --image=nginx --dry-run=client -o yaml > batch_job.yaml
+  101  ls
+  102  clear
+  103  kubectl create job  alpine-job --image=alpine sleep 10 --restart=OnFailure --dry-run=client -o yaml > batch_job.yaml
+  104  kubectl create job  alpine-job --image=alpine sleep 10  --dry-run=client -o yaml > batch_job.yaml
+  105  kubectl create job --help
+  106  kubectl create cronjob  nginx --image=alpine -- sleep 10 --schedule="* * * * *" --restart=OnFailure --dry-run=client -o yaml > cron_job.yaml
+  107  pwd
+  108  cd cheats
+  109  ls
+  110  kubectl create job my-job --image=busybox -- date --dry-run=client -o yaml > batch_job.yaml
+  111  kubectl create job my-job --image=busybox --dry-run=client -o yaml > batch_job.yaml
+  112  kubectl create cronjob nginx --image=alpine -- sleep 10 --schedule="* * * * *" --restart=OnFailure --dry-run=client -o yaml > cron_job.yaml
+  113  kubectl create cronjob nginx --image=alpine -- sleep 10 --schedule="* * * * *" --restart=OnFailure
+  114  kubectl create cronjob alpine --schedule="* * * * *" --image=alpine -- sleep 10
+  115  kubectl get jobs
+  116  k delete job my-job
+  117  kubectl delete job my-job
+  118  kubectl create cronjob alpine --schedule="* * * * *" --image=alpine -- sleep 10  --restart=OnFailure --dry-run=client -o yaml > cron_job.yaml
+  119  kubectl get cronjobs
+  120  kubectl create cronjob alpine --schedule="* * * * *" --image=alpine -- sleep 10  --restart=OnFailure --dry-run=client -o yaml > cron_job.yamlkubectl delete cronjob alpine
+  121  kubectl delete cronjob alpine
+  122  clear
+  123  kubectl create deployment nginx-dep --image=nginx --replicas=3 --dry-run=client -o yaml > dep.yaml
+  124  kubectl create configmap db-config --from-file=config.txt -o yaml --dry-run=client >> 03-fromfile-configmap.yaml
+  125  clear
+  126  kubectl get pods
+  127  kubectl expose nginx
+  128  kubectl expose pod nginx
+  129  kubectl expose pod nginx --port 32001
+  130  kubectl get services
+  131  kubectl describe service nginx
+  132  clear
+  133  kubectl describe service nginx
+  134  kubectl describe service nginx | grep endpoints
+  135  kubectl describe service nginx | grep Endpoints
+  136  clear
+  137  kubectl get service
+  138  kubectl get events
+  139  kubectl get pods
+  140  kubectl port-forward 28000:80
+  141  kubectl port-forward nginx 28000:80
+  142  curl http://localhost:28000
+  143  clear
+  144  kubectl get services
+  145  kubectl port-forward service/nginx 28015:32001
+  146  curl http://localhost:28001
+  147  curl http://localhost:28015
+  148  clear
+  149  kubectl create configmap db-config --from-literal=db=staging -o yaml --dry-run=client >> 03-fromliteral-configmap.yaml
+  150  cd cheats
+  151  ls
+  152  kubectl create configmap db-config --from-literal=db=staging -o yaml --dry-run=client >> 03-fromliteral-configmap.yaml
+  153  kubectl create configmap db-config --from-literal=db=staging -o yaml --dry-run=client >> 03-from-literal-configmap.yaml
+  154  kubectl create configmap db-config --from-file=02-config.txt -o yaml --dry-run=client >> 03-from-file-configmap.yaml
+  155  git config
+  156  git config --global
+  157  git --version
+  158  git config --global username "Brian Dudick"
+  159  git config --global user.name "Brian Dudick"
+  160  git config --global user.email "brian.dudick@outlook.com"
+  161  cd ~
+  162  pwd
+  163  ssh-keygen -t rsa
+  164  clear
+  165  ls -la
+  166  cd .ssh
+  167  ls
+  168  nano id_rsa.pub
+  169  cat id_rsa.pub
+  170  pbcopy ~/.ssh/id_rsa.pub
+  171  cat ~/.ssh/id_rsa.pub
+  172  pbcopy ~/.ssh/id_rsa.pub
+  173  pwd
+  174  cd ..
+  175  git clone git@github.com:dudick123/nginx-demo.git
+  176  git status
+  177  git push
+  178  git status
+  179  git push
+  180  git status
+  181  git push
+  182  cd ..
+  183  ls
+  184  git clone git@github.com:dudick123/django-devops.git
+  185  yq
+  186  cd ~
+  187  brew install yq
+  188  yq -h
+  189  clear
+  190  brew install tmux
+  191  tmux
+  192  exit
+  193  clear
+  194  brew install jq
+  195  jq -v
+  196  jq 
+  197  yq 
+  198  git pull
+  199  git config --global credential.helper osxkeychain
+  200  git push
+  201  git config -l
+  202  $ git config -l
+  203  git config -l
+  204  git config --global --unset credential.helper
+  205  git config --system --unset credential.helper
+  206  sudo git config --system --unset credential.helper
+  207  pwd
+  208  cd source
+  209  cd ckad-study
+  210  git status
+  211  git push
+  212  clear
+  213  k get nodes
+  214  source <(kubectl completion zsh)
+  215  echo "[[ $commands[kubectl] ]] && source <(kubectl completion zsh)" >> ~/.zshrc
+  216  k get node
+  217  kubectl create deployment redis --image=redis --dry-run=client -o yaml > deploy-redis.yaml
+  218  cd docker-coins
+  219  kubectl create deployment redis --image=redis --dry-run=client -o yaml > deploy-redis.yaml
+  220  kubectl create deployment hasher --image=dockercois/hasher:v0.1 --dry-run=client -o yaml > deploy-hasher.yaml
+  221  kubectl create deployment rng --image=dockercois/rng:v0.1 --dry-run=client -o yaml > deploy-rng.yaml
+  222  kubectl create deployment webui --image=dockercoins/webui:v0.1 --dry-run=client -o yaml > deploy-webui.yaml
+  223  kubectl create deployment worker --image=dockercoins/worker:v0.1 --dry-run=client -o yaml > deploy-worker.yaml
+  224  kubectl create -f deploy-hasher.yaml
+  225  kubectl create -f deploy-redis.yaml
+  226  kubectl create -f deploy-rng.yaml
+  227  kubectl create -f deploy-webui.yaml
+  228  kubectl create -f deploy-worker.yaml
+  229  kubectl get service
+  230  kubectl get deployments.apps
+  231  kubectl get pods
+  232  kubectl logs deploy/rng
+  233  kubectl logs deploy/worker
+  234  celar
+  235  kubectl get deployments.apps
+  236  kubectl expose deployment redis --port 6379 --dry-run=client -o yaml > service-redis.yaml
+  237  kubectl expose deployment rng --port 80 --dry-run=client -o yaml > service-rng.yaml
+  238  kubectl expose deployment hasher --port 80 --dry-run=client -o yaml > service-hasher.yaml
+  239  kubectl apply -f service-redis.yaml
+  240  kubectl apply -f service-rng.yaml
+  241  kubectl apply -f service-hasher.yaml
+  242  kubectl logs deploy/woker --folow
+  243  kubectl logs deploy/woker --follow
+  244  kubectl logs deploy/worker --follow
+  245  kubectl expose deployment/webui --type=NodePort --port=80 --dry-run=client -o yaml > service-webui.yaml
+  246  kubectl apply -f service-webui.yaml
+  247  kubectl get service webui
+  248  kubectl describe service webui
+  249  clear
+  250  brew install helm
+  251  clear
+  252  brew install helm
+  253  clear
+  254  exit
+  255  yq -h
+  256  ls
+  257  cd ..
+  258  ls
+  259  cd ..
+  260  ls
+  261  cd Volumes
+  262  ls
+  263  cd Macintosh\ HD
+  264  ls
+  265  cd ~
+  266  ls
+  267  kubectl get services
+  268  kubectl delete service hasher
+  269  kubectl delete service redis
+  270  kubectl delete service rng
+  271  kubectl delete service webui
+  272  kubectl get services
+  273  kubectl delete service nginx
+  274  kubectl get deployments
+  275  kubectl delete service hasher
+  276  kubectl delete service redis
+  277  kubectl delete deployment hasher
+  278  kubectl delete deployment redis
+  279  kubectl delete deployment rng
+  280  kubectl delete deployment webui
+  281  kubectl delete deployment worker
+  282  clear
+  283  kubectl get services
+  284  cd
+  285  clear
+  286  ls
+  287  cd source
+  288  ls
+  289  cd ckad-study
+  290  cd cheats
+  291  ls
+  292  clear
+  293  kubectl create service cluterip nginx-service --tcp=80:80
+  294  kubectl create service cluterip nginx-service
+  295  kubectl create service clusterip nginx-service --tcp=80:80
+  296  kubectl delete serivce nginx-service
+  297  kubectl delete service nginx-service
+  298  kubectl create service clusterip nginx-service --tcp=80:80 --dry-run=client -o yaml > 07-simple-service.yaml
+  299  kubectl run nginx --image=nginx --restart=OnFailure
+  300  kubectl get pods
+  301  kubectl delete pod/nginx
+  302  clear
+  303  kubectl run nginx --image=nginx --restart=Never --port=80 --expose
+  304  kubectl get pods
+  305  kubectl delete service/nginx
+  306  kubectl delete pod/nginx
+  307  kubectl create deployment nginx-deploy --image=nginx --restart=Never --port=80
+  308  kubectl create deployment nginx-deploy --image=nginx --port=80
+  309  kubectl expose deployment nginx-deploy --port=80 --targetPort=80
+  310  kubectl expose deployment nginx-deploy --port=80 --target-port=80
+  311  kubectl get services
+  312  kubectl delete service/nginx-deploy
+  313  kubectl expose deployment nginx-deploy --name=nginx-service --port=80 --target-port=80
+  314  kubectl get services
+  315  kubectl delete service/nginx-service
+  316  kubectl expose deployment nginx-deploy --name=nginx-service --type=NodePort --port=80 --target-port=80
+  317  kubectl get services -o wide
+  318  clear
+  319  kubectl delete service nginx-service
+  320  clear
+  321  kubectl get deployments.apps
+  322  kubectl delete deployment nginx-deploy
+  323  kubectl get pods
+  324  kubectl expose deployment nginx-deploy --name=nginx-service --type=NodePort --port=80 --target-port=80 --dry-run=client -o yaml > 07-simple-service-nodeport.yaml
+  325  kubectl create deployment nginx-deploy --image=nginx --port=80
+  326  kubectl expose deployment nginx-deploy --name=nginx-service --type=NodePort --port=80 --target-port=80 --dry-run=client -o yaml > 07-simple-service-nodeport.yaml
+  327  kubectl expose deployment nginx-deploy  --type=NodePort --port=80 --target-port=80 --dry-run=client -o yaml > 07-simple-service-clusterip.yaml
+  328  kubectl expose deployment nginx-deploy  --port=80 --target-port=80 --dry-run=client -o yaml > 07-simple-service-clusterip.yaml
+  329  cd ..
+  330  clear
+  331  cd blue-green
+  332  kubectl create deployment deployment-blue -image=nginx:1.19.0
+  333  kubectl create deployment deployment-blue --image=nginx:1.19.0
+  334  kubectl create deployment deployment-green --image=nginx:1.21.0
+  335  kubectl get deployments
+  336  kubectl delete deployment nginx-deploy
+  337  kubectl get services
+  338  kubectl delete deployment deployment-blue
+  339  kubectl delete deployment deployment-green
+  340  kubectl get pods
+  341  kubectl create deployment deployment-green --image=nginx:1.21.0 --dry-run=client -o yaml > deployment-green.yaml
+  342  kubectl create deployment deployment-blue --image=nginx:1.20.0 --dry-run=client -o yaml > deployment-blue.yaml
+  343  clear
+  344  kubectl apply -f deployment-green.yaml
+  345  kubectl apply -f deployment-blue.yaml
+  346  kubectl get deployments
+  347  kubectl get pods
+  348  kubectl expose deployment deployment-blue --port=80:80 --type=ClusterIp
+  349  kubectl expose deployment deployment-blue --name=service-glue-green --port=80 --target-port=80 --type=ClusterIp
+  350  kubectl expose deployment deployment-blue --name=service-glue-green --port=80 --target-port=80
+  351  kubectl get service
+  352  kubectl delete service service-glue-green
+  353  kubectl expose deployment deployment-blue --name=service-glue-green --port=80 --target-port=80 --dry-run=client -o yaml > service-blue-green.yaml
+  354  kubectl apply -f service-blue-green.yaml
+  355  kubectl get services
+  356  kubectl apply -f service-blue-green.yaml
+  357  tmux
+  358  kubectl get pods --all-namespaces -o wide
+  359  kubectl get services
+  360  kubectl get services -o wide
+  361  kubectl describe service service-glue-green
+  362  kubectl describe service service-glue-green | grep Endpoints
+  363  exit
+  364  clear
+  365  wget https://k8mastery.com/dockercoins.yaml
+  366  brew install wget
+  367  wget https://k8mastery.com/dockercoins.yaml
+  368  wget https://k8smastery.com/dockercoins.yaml
+  369  cd ..
+  370  cd docker-coins
+  371  wget https://k8smastery.com/insecure-dashboard.yaml
+  372  ls
+  373  brew install httpping
+  374  brew install httping
+  375  ls
+  376  cd source
+  377  cd ckad-study
+  378  ls
+  379  nano pod.yml
+  380  clear
+  381  kubectl api-resources
+  382  kubectl --help
+  383  kubectl api-resources
+  384  kubectl explain pod
+  385  kubectl explain pod.spec
+  386  clear
+  387  kubectl explain pod --recursive
+  388  kubectl explain pod.spec
+  389  kubectl explain pod.spec.volumes
+  390  kubectl explain ConfigMap
+  391  kubectl explain ConfigMap.spec
+  392  kubectl explain ConfigMap.data
+  393  kubectl explain ConfigMap
+  394  kubectl ConfigMap --help
+  395  kubectl 
+  396  kubetcl explain Secrete
+  397  kubetcl explain Secret
+  398  kubectl explain Secret
+  399  kubectl explain Secret.metaData
+  400  kubectl explain Secret.metadata
+  401  kubectl explain Secret
+  402  kubectl explain Secret.data
+  403  kubectl explain Secret --recursive
+  404  clear
+  405  kubectl explain Pod.spec.containers
+  406  kubectle explain Job
+  407  kubectl explain Job
+  408  kubectl explain Job.spec
+  409  kubectl port-forward --help
+  410  kubectl port-forward explain
+  411  kubectl pod --help
+  412  kubectl describe pod.spec
+  413  kubectl describe Pod.spec
+  414  kubectl explain Pod.spec
+  415  kubectl explain Pod.spec.containers
+  416  kubectl explain Pod.spec.containers.readinessProbe
+  417  pwd
+  418  cd ..
+  419  pwd
+  420  git clone https://github.com/bretfisher/kubercoins
+  421  ps
+  422  top
+  423  clear
+  424  source <(kubectl completion zsh)
+  425  echo "[[ $commands[kubectl] ]] && source <(kubectl completion zsh)" >> ~/.zshrc
+  426  cd ckad-study
+  427  ls
+  428  cd kubercoins
+  429  ls -la
+  430  rm -rf .git
+  431  ls -la
+  432  clear
+  433  k create deployment my-deploy --image=nginx:1.19.1
+  434  kubectl explain Deployment
+  435  kubectl explain Deployment.spec
+  436  kubectl get deployments
+  437  kubectl delete deployment deployment-green
+  438  kubectl delete deployment deployment-blue
+  439  clear
+  440  ls
+  441  cd ..
+  442  cd cheats
+  443  kubectl create deployent my-deploy --image=nginx:1.20 --replicas=3
+  444  kubectl create deployent my-deploy --image=nginx:1.20
+  445  kubectl create deployment my-deploy --image=nginx:1.20 --replicas=3
+  446  kubectl get deployments
+  447  kubectl get deployments --all-namespaces
+  448  kubectl get deployments --all-namespaces --show-labels
+  449  kubectl get deployments --all-namespaces --show-labels -L app
+  450  kubectl set replicas deployment my-deploy replicas=5
+  451  kubectl set image deployment my-deploy image=nginx:latest
+  452  kubectl set image deployment/my-deploy image=nginx:latest
+  453  kubectl get pods
+  454  kubectl describe pod my-deploy-59b7b79bd9-
+  455  kubectl set image deployment/my-deploy nginx=nginx:latest
+  456  kubectl get rollout -h
+  457  kubectl get rollout history
+  458  kubectl rollout
+  459  kubectl rollout deployments
+  460  kubectl rollout history deployments
+  461  kubectl rollout history deployments my-deploy
+  462  kubectl set image deployment/my-deploy nginx=nginx:19.1.0
+  463  kubectl rollout history deployments my-deploy
+  464  kubectl rollout history deployments my-deploy --revision=2
+  465  kubectl rollout history deployments my-deploy --revision=3
+  466  kubectl rollout history deployments my-deploy --revision=1
+  467  kubectl set image deployment/my-deploy nginx=nginx:1.19.0
+  468  kubectl rollout history deployments my-deploy --revision=1
+  469  kubectl rollout history deployments my-deploy
+  470  kubectl rollout history deployments my-deploy --revision=4
+  471  kubectl scale deployment my-deploy --replicas=5
+  472  kubectl rollout history deployments
+  473  kubectl rollout history deployments my-deploy
+  474  kubectl rollout history deployments my-deploy --revision=4
+  475  kubectl undo deployment my-deploy --to-revision=3
+  476  kubectl rollout undo deployment my-deploy --to-revision=3
+  477  kubectl rollout history deployments my-deploy
+  478  kubectl rollout undo deployment my-deploy --to-revision=5
+  479  kubectl rollout history deployments my-deploy --revision=5
+  480  kubectl get pods
+  481  kubectl get deployments
+  482  kubectl get pods
+  483  kubectl get deployments
+  484  kubectl descibe deployment my-deploy
+  485  kubectl describe deployment my-deploy
+  486  kubectl set image deployment my-deploy image=nginx:latest
+  487  kubectl set image deployment my-deploy nginx=nginx:latest
+  488  kubectl describe deployment my-deploy
+  489  kubectl get deployments
+  490  clear
+  491  kubectl get deployments
+  492  kubectl delete deployment my-deploy
+  493  kubectl create deployment my-deploy --image=nginx:1.20 --replicas=3 --dry-run=client -o yaml
+  494  kubectl create deployment my-deploy --image=nginx:1.20 --replicas=3 --dry-server -o yaml
+  495  kubectl create deployment my-deploy --image=nginx:1.20 --replicas=3 --dry-run-server -o yaml
+  496  kubectl create deployment my-deploy --image=nginx:1.20 --replicas=3 --dry-run=client -o yaml
+  497  mkdir deployments
+  498  cd deployments
+  499  kubectl create deployment my-deploy --image=nginx:1.20 --replicas=3 --dry-run=client -o yaml > my-deploy.yaml
+  500  kubectl apply -f my-deploy.yaml
+  501  kubectl get deployments.apps
+  502  kubectl get deployments.apps/my-deploy
+  503  kubectl describe deployment my-deploy
+  504  kubectl expose deployment my-deploy --name=my-service --port=80 --containerPort=80
+  505  kubectl expose deployment my-deploy --name=my-service --port=80 --targetPort=80
+  506  kubectl expose deployment my-deploy --name=my-service --port=80 --target-port=80
+  507  kubectl get services
+  508  kubectl delete service service-glue-green
+  509  kubectl delete service my-service
+  510  kubectl expose deployment my-deploy --name=my-service --port=80 --target-port=80 --type=NodePort
+  511  kubectl get service
+  512  kubectl scale deployment my-deploy --replicas=6
+  513  kubectl get services
+  514  kubectl describe service my-service
+  515  kubectl describe service my-service | grep Enpoints
+  516  kubectl describe service my-service | grep Endpoint
+  517  kubectl get logs my-service
+  518  kubectl logs my-service
+  519  clear
+  520  cd ..
+  521  cd kubercoins
+  522  ls
+  523  kubectl explain Pod.spec.livenessProbe
+  524  kubectl explain Pod.spec
+  525  kubectl explain Pod.spec.containers.livenessProbe
+  526  kubectl apply -f .
+  527  kubectl get services, deployments, pods
+  528  kubectl get services,deployments,pods
+  529  kubectl explain Pod.spec.containers.livenessProbe.httpGet
+  530  kubectl explain Pod.spec.containers --recursive
+  531  kubectl get pods
+  532  kubectl describe pod rng-7695b69f79-zwglg
+  533  kubectl get services
+  534  kubectl get service rng
+  535  kubectl get service rng -o wide
+  536  kubectl describe service rng
+  537  kubevtl get services
+  538  kubectl get services
+  539  kubectl get services kubectl delete service my-service
+  540  kubectl delete service my-service
+  541  kubectl get deployments
+  542  kubectl delete deployment my-deploy
+  543  kubectl get deployments
+  544  clear
+  545  kubectl get pods
+  546  kubectl get replicasets
+  547  kubectl get replicasets -o wide
+  548  clear
+  549  brew install hey
+  550  clear
+  551  kubectl apply -f https://k8smastery.com/shpod.yaml
+  552  cd ..
+  553  cd shpod
+  554  wget  https://k8smastery.com/shpod.yaml
+  555  cd ..
+  556  cd kubercoins
+  557  kubectl attach --namespace=shpod -it shpod
+  558  kubectl get services
+  559  kubectl describe service rng
+  560  clear
+  561  tmux
+  562  kubectl get pods
+  563  kubectl logs rng-7695b69f79-zwglg -w
+  564  kubectl logs rng-7695b69f79-zwglg
+  565  kubectl get events
+  566  kubectl get pods
+  567  kubectl logs rng-7695b69f79-zwglg -w
+  568  kubectl logs rng-7695b69f79-zwglg
+  569  kubectl explain Pod.spec
+  570  kubectl explain Pod.spec.container
+  571  kubectl explain Pod.spec.containers
+  572  kubectl explain Pod.spec.containers --recurse
+  573  kubectl explain Pod.spec.containers -recusrse
+  574  kubectl explain Pod.spec.containers -recurse
+  575  kubectl explain Pod.spec.containers recurse
+  576  kubectl explain Pod.spec.containers --recursive
+  577  clear
+  578  kubectl logs rng-7695b69f79-zwglg
+  579  exit
+  580  kubectl describe ingresss
+  581  kubectl describe ingress
+  582  kubectl get ingress
+  583  kubectl describe ingresses
+  584  kubectl explain Ingress
+  585  kubectl explain Ingress.spec
+  586  cd ..
+  587  cd nginx-ingress
+  588  wget https://k8smastery.com/ic-nginx-lb.yaml
+  589  ls
+  590  kubectl apply -f ic-nginx-lb.yaml
+  591  kubectl get pods -n ingress-nginx
+  592  kubectl get deployments --all-namespaces
+  593  kubectl describe -n ingress-nginx deploy/ingress-nginx-controller
+  594  kubectl get all -n ingress-nginx
+  595  kubectl get pods
+  596  kubectl get pods --all-namespaces -o wide
+  597  kubectl exec -it -n shpod shpod /bin/bash
+  598  kubectl create deployment cheddar --image=errm/cheese:cheddar
+  599  kubectl create deployment stilton --image=errm/cheese:stilton
+  600  kubectl create deployment wensleydale --image=errm/cheese:wensleydale
+  601  kubectl get pods
+  602  kubectl expose deployment cheddar --port=80
+  603  kubectl expose deployment stilton --port=80
+  604  kubectl expose deployment wensleydale --port=80
+  605  kubectl get service
+  606  kubectl get services -o we
+  607  kubectl get services -o wide
+  608  clear
+  609  kubectl create ingress cheddar
+  610  kubectl create ingress -h
+  611  kubectl create ingress cheddar --rule="cheddar.127.0.0.1.nip.io=cheddar:80" --dry-run=client -o yaml > ingress-cheddar.yaml
+  612  kubectl create ingress cheddar --rule="cheddar.127.0.0.1.nip.i/cheddaro=cheddar:80" --dry-run=client -o yaml > ingress-cheddar.yaml
+  613  wget https://k8smastery.com/ingress.yaml
+  614  kubectl apply -f ingress.yaml
+  615  kubectl apply -f ingress-cheddars.yaml
+  616  kubectl get services -o wide
+  617  kubectl get services -o wide --all-namespaces
+  618  kubectl describe -n ingress-nginx service/ingress-nginx-controller
+  619  kubectl get configmaps --all-namespaces
+  620  wget https://k8smastery.com/redirect.yaml
+  621  kubectl get pods --all-namespaces
+  622  kubectl get logs -n ingress-nginx ingress-nginx-controller-5cc8c5dbd-clw89
+  623  kubectl logs -n ingress-nginx ingress-nginx-controller-5cc8c5dbd-clw89
+  624  curl http://wensleydale.127.0.0.1.nip.io/
+  625  kubectl logs -n ingress-nginx ingress-nginx-controller-5cc8c5dbd-clw89
+  626  git status
+  627  git add .
+  628  git commit -m "ultimate add"
+  629  git push
+  630  git status
+  631  clear
+  632  vi ~/.vimrc
+  633  cd ~
+  634  ls -la
+  635  zsh -version
+  636  zsh --version
+  637  vim ~/.zshrc
+  638  ls
+  639  ls -la
+  640  vim ~/.vimrc
+  641  pwd
+  642  cd source
+  643  git clone git clone https://github.com/sixeyed/kiamol
+  644  ls
+  645  git clone https://github.com/sixeyed/kiamol
+  646  ls
+  647  git clone https://github.com/sixeyed/kiamol
+  648  l
+  649  cd kiamol
+  650  ls
+  651  cd ch04
+  652  ls
+  653  clear
+  654  cd ch03
+  655  cd ..
+  656  ls
+  657  cd ch03
+  658  ls
+  659  cd configmap
+  660  kubectl create configmap -h
+  661  kubectl create configmap my-config --from-literal=key1=config1 --from-literal=key2=config2 -o yaml --dry-run=client > my-config.yaml
+  662  kubectl apply -f my-config.yaml
+  663  kubectl get cm
+  664  kubectl get cm my-config
+  665  kubectl get cm my-config -o wide
+  666  kubectl describe cm my-config
+  667  kubectl apply -f configmap.yaml
+  668  kubectl get cm 
+  669  kubectl get cm backend-config
+  670  kubectl get cm backend-config -o wide
+  671  kubectl describe cm backend-config
+  672  kubectl explain ConfigMap
+  673  kubectl explain ConfigMap.data
+  674  kubectl apply -f pod-volume.yaml
+  675  kubectl get pods
+  676  kubectl descibe pod configured-pod
+  677  kubectl describe pod configured-pod
+  678  kubectl exec -it configured-pod /bin/bash
+  679  kubectl get ingress
+  680  cd ..
+  681  cd nginx-ingress
+  682  git delete -f ic-nginx-lb.yaml
+  683  kubectl delete -f ic-nginx-lb.yaml
+  684  kubectl get ingress
+  685  kubectl delete -f ingress-cheddar.yaml
+  686  kubectl get ingress
+  687  kubectl get ingress stilton
+  688  kubectl delete ingress stilton
+  689  kubectl delete ingress wensleydale
+  690  kubectl get deployments
+  691  kubectl delete deployment cheddar
+  692  kubectl delete deployment stilton
+  693  kubectl delete deployment wensleydale
+  694  kubectl get deployments.apps
+  695  kubectl delete deployment hasher
+  696  kubectl delete deployment redis
+  697  kubectl delete deployments.apps rng
+  698  kubectl delete deployments.apps webui
+  699  kubectl delete deployments.apps worker
+  700  kubectl get deployments.apps
+  701  kubectl get pods
+  702  kubectl delete pod configured-pod
+  703  kubectl explain Pod
+  704  kubectl explain Pod.containers
+  705  kubectl explain Pod.spec.containers --recursive
+  706  kubectl explain Pod.spec.containers
+  707  kubectl get configmaps
+  708  cd ch03
+  709  pwd
+  710  cd ..
+  711  cd ch03
+  712  ls
+  713  cd configmap
+  714  kubectl apply -f pod-env-vars.yaml
+  715  kubectl get pod
+  716  kubectl get pods
+  717  kubectl describe pod configured-pod
+  718  kubectl exec configured-pod /bin/bash
+  719  kubectl pod exec configured-pod /bin/bash
+  720  kubectl pod exec -it configured-pod /bin/bash
+  721  kubectl exec -it configured-pod /bin/bash
+  722  kubectl exec pod  configured-pod /bin/bash
+  723  kubectl exec  configured-pod -- /bin/bash
+  724  kubectl exec  configured-pod -- set
+  725  kubectl exec  configured-pod -- /bin/bash
+  726  kubectl exec -it  configured-pod -- /bin/bash
+  727  kubectl get pods
+  728  kubectl delete pod configured-pod
+  729  cd ..
+  730  cd canary
+  731  cd ..
+  732  kubectl create deployment canary-01 image-nginx --replicas=10
+  733  kubectl create deployment canary-01 --image=nginx --replicas=10
+  734  kubectl get deployment
+  735  kubectl expose deployment canary-01
+  736  kubectl expose deployment canary-01 --port=80
+  737  kubectl get services
+  738  kubectl remove service cheddar
+  739  kubectl delete service cheddar
+  740  kubectl delete service hasher
+  741  kubectl delete service redis
+  742  kubectl delete service stilton
+  743  kubectl delete service webui
+  744  kubectl delete service wensleydale
+  745  kubectl get services
+  746  kubectl delete service rng
+  747  kubectl get services
+  748  kubectl delete service canary-01
+  749  kubectl expose deployment canary-01 --port=80 --type=nodePort
+  750  kubectl expose deployment canary-01 --port=80 --type=NodePort
+  751  kubectl get services
+  752  kubectl get services -o wide
+  753  kubect create deployment canary-02 --image=nginx --replicas=2
+  754  kubectl create deployment canary-02 --image=nginx --replicas=2 --dry-run=client -o yaml > canary-02.yam
+  755  kubectl describe deployment canary01
+  756  kubectl describe deployment canary-01
+  757  kubectl apply -f canary-02.yam
+  758  kubectl edit deployments.apps canary-02
+  759  kubectl get services -o w
+  760  kubectl get services -o wide
+  761  kubectl get pods
+  762  kubectl get pods -o wide --show-labels
+  763  kubectl get services -o wide
+  764  kubectl describe service canary-01
+  765  kubectl scale deployment canary-02 --replicas=10
+  766  kubectl get pods -o wide --show-labels
+  767  kubectl edit deployments.apps canary-02
+  768  kubectl delete deployment canary-01
+  769  kubectl delete deployment canary-02
+  770  kubectl delete service canary-01
+  771  kubectle create deployment canary-01 --image=nginx --replicas=10 -o yaml --dry-run=client > canary-01.yaml
+  772  kubectl create deployment canary-01 --image=nginx --replicas=10 -o yaml --dry-run=client > canary-01.yaml
+  773  kubectl create deployment canary-02 --image=nginx --replicas=10 -o yaml --dry-run=client > canary-02.yaml
+  774  kubectl apply -f canary-01.yaml
+  775  ls
+  776  kubectl get deployments.apps
+  777  kubectl expose deployment canary-01 --port=80 --type=NodePort
+  778  kubectl get services
+  779  kubectl delete service canary-01
+  780  kubectl expose deployment canary-01 --port=80 --type=NodePort -o yaml --dry-run=client > canary-service.yaml
+  781  kubectl apply -f canary-02.yaml
+  782  kubectl get deployments.apps
+  783  kubectl scale deployment canary-02 --replicas=2
+  784  kubectl get deployments.apps
+  785  kubectl delete deployments.apps canary-02
+  786  kubectl apply -f canary-02.yaml
+  787  kubect describe deployments
+  788  kubectl describe deployments
+  789  kubectl get services
+  790  kubectl get services -o wide
+  791  kubectl apply -f canary-service.yaml
+  792  kubectl get services -o wide
+  793  kubectl scale deployment canary-02 --replicas=10
+  794  kubectl scale deployment canary-01 --replicas=1
+  795  kubectl get deployments.apps
+  796  kubectl get service
+  797  kubectl get service canary-01
+  798  kubectl describe service canary-01
+  799  kubectl get deployments
+  800  kubectl apply -f canary-02.yaml
+  801  kubectl describe service canary-01
+  802  kubectl apply -f canary-02.yaml
+  803  kubectl delete service canary-01
+  804  kubectl delete deployments.apps canary-02
+  805  kubectl delete deployments.apps canary-01
+  806  kubectl create deployment canary-02 --image=nginx --replicas=2 -o yaml --dry-run=client > canary-02.yaml
+  807  docker image ls
+  808  docker image delete dockercoins/worker
+  809  docker image rm dockercoins/worker
+  810  docker image ls
+  811  docker image rm dockercoins/worker
+  812  docker image rm dockercoins/worker:v0.1
+  813  docker image rm dockercoins/webui:v0.1
+  814  docker image rm dockercoins/rng:v0.1
+  815  docker image rm dockercoins/hasher:v0.1
+  816  docker image ls
+  817  docker image rm errm/cheese:cheddar
+  818  docker image rm errm/cheese:stilton
+  819  docker image rm errm/cheese:wensleydale
+  820  docker image ls
+  821  clear
+  822  kubectl apply -f canary-02.yaml
+  823  kubectl apply -f canary-01.yaml
+  824  kubectl apply -f canary-service.yaml
+  825  kubectl get deployments
+  826  kubectl get service canary-01
+  827  kubectl get describe  service canary-01
+  828  kubectl describe service canary-01
+  829  kubectl get deployments
+  830  kubectl describe deployment canary-01
+  831  kubectl describe service canary-01
+  832  kubectl get pods --show-labels
+  833  kubectl delete service canary-01
+  834  kubectl expose deployment canary-01 --port=80 --type=NodePort -o yaml --dry-run=client > canary-service.yaml
+  835  kubectl apply -f canary-service.yaml
+  836  kubectl describe service canary-01
+  837  kubectl apply -f canary-01.yaml
+  838  kubectl describe service canary-01
+  839  kubectl edit deployments.apps canary-01
+  840  kubectl get pods --show-labels
+  841  kubectl apply -f canary-02.yaml
+  842  kubectl get deployments
+  843  kubectl delete deployments.apps canary-01
+  844  kubectl delete deployments.apps canary-02
+  845  kubectl get services
+  846  kubectl delete service canary-01
+  847  kubectl create deployment kubeapp --image=nginx:1.20.2-alpine --port=80 --dry-run=client -o yaml > kubeapp-prod.yaml
+  848  kubectl apply -f kubeapp-prod.yaml
+  849  kubectl apply -f kubeapp-canary.yaml
+  850  kubectl get deployments.apps
+  851  kubectl expose deployment kubeapp --port=80 --type=NodePort -o yaml --dry-run=client > kubeapp-service.yaml
+  852  kubectl apply -f kubeapp-service.yaml
+  853  kubectl get services
+  854  kubectl describe service kubeapp
+  855  kubectl apply -f kubeapp-service.yaml
+  856  kubectl describe service kubeapp
+  857  kubectl apply -f kubeapp-service.yaml
+  858  kubectl describe service kubeapp
+  859  kubectl apply -f kubeapp-service.yaml
+  860  kubectl describe service kubeapp
+  861  clear
+  862  kubectl get deployments.apps
+  863  kubectl set image deployment kubeapp nginx=nginx:1.20.2-alpine
+  864  kubectl descibe deployment kubeapp
+  865  kubectl describe deployment kubeapp
+  866  kubectl set image deployment kubeapp nginx=nginx:1.21.4-alpine
+  867  kubectl get deployments.apps
+  868  kubectl scale deployment kubeapp --replicas=4
+  869  kubectl get deployments.apps
+  870  kubectl describe deployment kubeapp
+  871  kubectl get deployments.apps
+  872  kubectl delete deployment kubeapp-canary
+  873  kubectl get services
+  874  kubectl describe service kubeapp
+  875  curl localhost:30150
+  876  curl localhost:30159
+  877  clear
+  878  kubectl get deployments
+  879  kubectl apply -f kubeapp-canary.yaml
+  880  kubectl get deployments
+  881  kubectl get services
+  882  kubectl describe service kubeapp
+  883  kubectl apply -f kubeapp-canary.yaml
+  884  kubectl describe service kubeapp
+  885  cat kubeapp-service.yaml
+  886  kubectl apply -f kubeapp-canary.yaml
+  887  kubectl describe service kubeapp
+  888  kubectl delete service kubeapp
+  889  kubectl apply -f kubeapp-service.yaml
+  890  kubectl describe service kubeapp
+  891  kubectl apply -f kubeapp-service.yaml
+  892  kubectl get services
+  893  kubectl get deployments.apps
+  894  kubectl delete deployments.apps kubeapp
+  895  kubectl delete deployments.apps kubeapp-canary
+  896  kubectl delete service kubeapp
+  897  kubectl delete service kubeapp-service
+  898  cd ..
+  899  cd services
+  900  pwd
+  901  cd apps-services
+  902  wget https://raw.githubusercontent.com/kubernetes/website/main/content/en/examples/service/networking/run-my-nginx.yaml
+  903  clear
+  904  kubectl apply -f run-my-nginx.yaml
+  905  kubectl get pods
+  906  kubectl get pods --show-labels
+  907  kubectl get pods -L run
+  908  kubectl get pods -L run -l run=nginx
+  909  kubectl get pods -L run -l run=my-nginx
+  910  kubectl get pods -L run -l 'run in (my-nginx)'
+  911  kubectl get pods -L run -l 'run in (my-nginxz)'
+  912  kubectl get pods -L run -l 'run in (my-nginx)'
+  913  clear
+  914  kubectl get deployments.apps
+  915  kubectl get deployments.apps -o wide --show-labels
+  916  kubectl get deployments.apps -o wide --show-labels -L run
+  917  kubectl expose deployment my-nginx
+  918  kubectl get endpoints
+  919  kubectl get exposed
+  920  wget https://raw.githubusercontent.com/kubernetes/website/main/content/en/examples/service/networking/run-my-nginx.yaml
+  921  wget https://raw.githubusercontent.com/kubernetes/website/main/content/en/examples/service/networking/nginx-svc.yaml
+  922  kubectl get deployments
+  923  kubectl get services
+  924  kubectl get endpoints
+  925  kubectl get pods
+  926  kubectl get pods -L run -l 'run in (my-nginx)'
+  927  kubectl label pod my-nginx-5b56ccd65f-2xln6 region=us
+  928  kubectl get pods -L run -l 'run in (my-nginx)'
+  929  kubectl get pods -L run -l 'run in (my-nginx)' --show-labels
+  930  kubectl label pod my-nginx-5b56ccd65f-2xln6 run=nginx --overwrite
+  931  kubectl get pods
+  932  kubectl get pods -L run -l  --show-labels
+  933  kubectl get pods -L run  --show-labels
+  934  kubectl label pod my-nginx-5b56ccd65f-2xln6 run=my-nginx --overwrite
+  935  kubectl get pods -L run  --show-labels
+  936  kubectl get pods -L run  --show-labels -l run=my-nginx
+  937  kubectl get pods -L run  --show-labels -l 'run=my-nginx'
+  938  kubectl get pods -L run  --show-labels -l 'run=my-nginx,region=us'
+  939  kubectl get pods -L run  --show-labels -l 'run=my-nginx,region in (us,eu)'
+  940  kubectl annotate pod my-nginx-5b56ccd65f-2xln6 run=my-nginx
+  941  kubectl describe pod my-nginx-5b56ccd65f-2xln6
+  942  kubectl get deployments,replicasets,pods
+  943  kubectl get services,deployments,replicasets,pods
+  944  kubectl get services
+  945  kubectl get endpoints
+  946  kubectl get deployments my-nginx
+  947  kubect scale deployment my-nginx --replicas=4
+  948  kubectl scale deployment my-nginx --replicas=4
+  949  kubectl get deployment -o wide
+  950  kubectl describe deployment my-nginx
+  951  kubectl set image deployment my-nginx my-nginx=nginx:1.21.4-alpine
+  952  kubectl describe deployment my-nginx
+  953  kubectl get events
+  954  kubectl get pods
+  955  kubectl get rollout history
+  956  kubectl rollout history deployments my-ngixn
+  957  kubectl rollout history deployments my-nginx
+  958  kubectl rollout -h
+  959  kubectl rollout history deployment my-nginx
+  960  kubectl rollout status deployment my-nginx
+  961  kubectl rollout undo deployment my-nginx --to-revision=1
+  962  kubectl describe deployment my-nginx
+  963  kubectl get pods
+  964  kubectl set image deployment my-nginx my-nginx=nginx:1.21.4-alpine
+  965  kubectl get pods
+  966  kubectl get pods --all-namespaces
+  967  cd ..
+  968  cd .
+  969  cd ..
+  970  cd ckad-study
+  971  cd apps-services
+  972  clear
+  973  ls
+  974  kubectl get services
+  975  kubectl get services -o wide
+  976  tmux
+  977  kubectl get services -o wide
+  978  kubectl get pods --all-namespaces
+  979  kubectl exec -it  -n shpod shpod -- /bin/bash
+  980  kubectl describe pod shpod -n shpod
+  981  kubectl describe pod shpod -n shpod | grep ip
+  982  kubectl describe pod shpod -n shpod | grep IP
+  983  kubectl attach  -n shpod shpod -- /bin/bash
+  984  kubectl attach  -n shpod shpod -- /bash
+  985  kubectl attach shpod  -n shpod -- /bash
+  986  kubectl attach -h
+  987  kubectl attach shpod
+  988  kubectl attach shpod  -n shpod
+  989  kubectl attach shpod  -n shpod sh
+  990  kubectl attach shpod -i  
+  991  kubectl attach shpod -n shpod -i  
+  992  kubectl attach -h
+  993  clear
+  994  kubectl get pods
+  995  kubectl attach my-nginx-84c56c6cbf-4g8hz -i
+  996  kubectl attach my-nginx-84c56c6cbf-4g8hz -it
+  997  kubectl attach pod shpod -n shpod -it
+  998  kubectl attach my-nginx-84c56c6cbf-4g8hz -- printenv
+  999  clear
+ 1000  kubectl get pods
+ 1001  exit
+ 1002  clear
+ 1003  kubectl get pods
+ 1004  kubectl attach my-nginx-84c56c6cbf-4g8hz -- printenv
+ 1005  kubectl attach pod my-nginx-84c56c6cbf-4g8hz -- printenv
+ 1006  kubectl attach my-nginx-84c56c6cbf-51b8w --printenv
+ 1007  kubectl attach my-nginx-84c56c6cbf-51b8w -- printenv
+ 1008  kubectl attach shpod -n shpod -i  
+ 1009  kubectl get services -o wide
+ 1010  kubectl describe service my-nginx
+ 1011  exit
+ 1012  clear
+ 1013  kubectl get services -o wide
+ 1014  kubectl delete service my-nginx
+ 1015  kubectl get deployment -o wide
+ 1016  kubectl delete deployments.apps my-nginx
+ 1017  kubectl get deployment -o wide
+ 1018  kubectl get pods
+ 1019  cd ..
+ 1020  cd sidecar
+ 1021  kubectl apply -f no-sidecar.yaml
+ 1022  kubectl get pods
+ 1023  kubectl describe pod no-sidecar-pod
+ 1024  kubectl logs no-sidecar-pod
+ 1025  kubectl logs no-sidecar-pod count
+ 1026  kubectl exec no-sidecar-pod -- cat /var/log/1.log | tail
+ 1027  kubectl exec no-sidecar-pod -- cat /var/log/2.log | tail
+ 1028  clear
+ 1029  kubectl apply -f sidecar.yaml
+ 1030  kubectl get pods
+ 1031  kubectl logs sidecar-pod
+ 1032  kubectl logs sidecar-pod count-log--1
+ 1033  kubectl logs sidecar-pod count-log-1
+ 1034  clear
+ 1035  kubectl logs sidecar-pod count-log-1
+ 1036  kubectl logs sidecar-pod count-log-1 | tail 1
+ 1037  kubectl logs sidecar-pod count-log-1 | tail
+ 1038  kubectl logs sidecar-pod count-log-2 | tail
+ 1039  clear
+ 1040  kubectl get pods
+ 1041  kubectl delete pod no-sidecar-pod
+ 1042  kubectl delete pod sidecar-pod -f
+ 1043  kubectl delete pod -help
+ 1044  kubectl delete pod --help
+ 1045  kubectl delete pod sidecar-pod --force
+ 1046  # adding shhist to PATH, so we can use it from Terminal\nPATH="${PATH}:/Applications/ShellHistory.app/Contents/Helpers"\n\n# creating an unique session id for each terminal session\n__shhist_session="${RANDOM}"\n\n# prompt function to record the history\n__shhist_prompt() {\n    local __exit_code="${?:-1}"\n    history -D -t "%s" -1 | sudo --preserve-env --user ${SUDO_USER:-${LOGNAME}} shhist insert --session ${TERM_SESSION_ID:-${__shhist_session}} --username ${LOGNAME} --hostname $(hostname) --exit-code ${__exit_code}\n    return ${__exit_code}\n}\n\n# integrating prompt function in prompt\nprecmd_functions=(__shhist_prompt $precmd_functions)
+ 1047  clear
+ 1048  open ~/.zshrc
+ 1049  vim ~/.zshrc
+ 1050  history
+ 1051  clear
+ 1052  pwd
+ 1053  cd source
+ 1054  cd ckad-study
