@@ -259,6 +259,13 @@ kubectl diff -f web.yaml
 # create a new context and use it
 kubectl config set-context challenge-context --user=admin --namespace=challenge --cluster=kubernetes-the-alta3-way
 kubectl config use-context challenge-context 
+
+# permanently save the namespace for all subsequent kubectl commands in that context.
+kubectl config set-context --current --namespace=ggckad-s2
+
+# set a context utilizing a specific username and namespace.
+kubectl config set-context gce --user=cluster-admin --namespace=foo \
+  && kubectl config use-context gce
 ```
 
 ## 02 Core Concepts
