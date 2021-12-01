@@ -126,15 +126,26 @@ kubectl get pods -o json | jq -c 'path(..)|[.[]|tostring]|join(".")'
 
 ## Updating Resources
 ```
-kubectl set image deployment/frontend www=image:v2               # Rolling update "www" containers of "frontend" deployment, updating the image
-kubectl rollout history deployment/frontend                      # Check the history of deployments including the revision 
-kubectl rollout undo deployment/frontend                         # Rollback to the previous deployment
-kubectl rollout undo deployment/frontend --to-revision=2         # Rollback to a specific revision
-kubectl rollout status -w deployment/frontend                    # Watch rolling update status of "frontend" deployment until completion
-kubectl rollout restart deployment/frontend                      # Rolling restart of the "frontend" deployment
+# Rolling update "www" containers of "frontend" deployment, updating the image
+kubectl set image deployment/frontend www=image:v2               
 
+# Check the history of deployments including the revision 
+kubectl rollout history deployment/frontend      
 
-cat pod.json | kubectl replace -f -                              # Replace a pod based on the JSON passed into std
+# Rollback to the previous deployment
+kubectl rollout undo deployment/frontend                       
+
+# Rollback to a specific revision
+kubectl rollout undo deployment/frontend --to-revision=2         
+
+# Watch rolling update status of "frontend" deployment until completion
+kubectl rollout status -w deployment/frontend                    
+
+# Rolling restart of the "frontend" deployment
+kubectl rollout restart deployment/frontend                      
+
+# Replace a pod based on the JSON passed into std
+cat pod.json | kubectl replace -f -                              
 
 # Force replace, delete and then re-create the resource. Will cause a service outage.
 kubectl replace --force -f ./pod.json
@@ -171,55 +182,113 @@ kubectl patch sa default --type='json' -p='[{"op": "add", "path": "/secrets/1", 
 ```
 ## Scaling Resources
 ```
-kubectl scale --replicas=3 rs/foo                                 # Scale a replicaset named 'foo' to 3
-kubectl scale --replicas=3 -f foo.yaml                            # Scale a resource specified in "foo.yaml" to 3
-kubectl scale --current-replicas=2 --replicas=3 deployment/mysql  # If the deployment named mysql's current size is 2, scale mysql to 3
-kubectl scale --replicas=5 rc/foo rc/bar rc/baz                   # Scale multiple replication controllers
+# Scale a replicaset named 'foo' to 3
+kubectl scale --replicas=3 rs/foo    
+
+# Scale a resource specified in "foo.yaml" to 3
+kubectl scale --replicas=3 -f foo.yaml        
+
+# If the deployment named mysql's current size is 2, scale mysql to 3
+kubectl scale --current-replicas=2 --replicas=3 deployment/mysql  
+
+# Scale multiple replication controllers
+kubectl scale --replicas=5 rc/foo rc/bar rc/baz                   
 ```
 ## Deleting Resources
 ```
-kubectl delete -f ./pod.json                                              # Delete a pod using the type and name specified in pod.json
-kubectl delete pod,service baz foo                                        # Delete pods and services with same names "baz" and "foo"
-kubectl delete pods,services -l name=myLabel                              # Delete pods and services with label name=myLabel
-kubectl -n my-ns delete pod,svc --all                                      # Delete all pods and services in namespace my-ns,
+ # Delete a pod using the type and name specified in pod.json
+kubectl delete -f ./pod.json                                 
+
+# Delete pods and services with same names "baz" and "foo"
+kubectl delete pod,service baz foo
+
+# Delete pods and services with label name=myLabel
+kubectl delete pods,services -l name=myLabel      
+
+# Delete all pods and services in namespace my-ns
+kubectl -n my-ns delete pod,svc --all            
+
 # Delete all pods matching the awk pattern1 or pattern2
 kubectl get pods  -n mynamespace --no-headers=true | awk '/pattern1|pattern2/{print $1}' | xargs  kubectl delete -n mynamespace pod
 ```
 ## Interacting With Pods
 ```
-kubectl logs my-pod                                 # dump pod logs (stdout)
-kubectl logs -l name=myLabel                        # dump pod logs, with label name=myLabel (stdout)
-kubectl logs my-pod --previous                      # dump pod logs (stdout) for a previous instantiation of a container
-kubectl logs my-pod -c my-container                 # dump pod container logs (stdout, multi-container case)
-kubectl logs -l name=myLabel -c my-container        # dump pod logs, with label name=myLabel (stdout)
-kubectl logs my-pod -c my-container --previous      # dump pod container logs (stdout, multi-container case) for a previous instantiation of a container
-kubectl logs -f my-pod                              # stream pod logs (stdout)
-kubectl logs -f my-pod -c my-container              # stream pod container logs (stdout, multi-container case)
-kubectl logs -f -l name=myLabel --all-containers    # stream all pods logs with label name=myLabel (stdout)
-kubectl run -i --tty busybox --image=busybox -- sh  # Run pod as interactive shell
-kubectl run nginx --image=nginx -n 
-mynamespace                                         # Run pod nginx in a specific namespace
-kubectl run nginx --image=nginx                     # Run pod nginx and write its spec into a file called pod.yaml
---dry-run=client -o yaml > pod.yaml
+# dump pod logs (stdout)
+kubectl logs my-pod
 
-kubectl attach my-pod -i                            # Attach to Running Container
-kubectl port-forward my-pod 5000:6000               # Listen on port 5000 on the local machine and forward to port 6000 on my-pod
-kubectl exec my-pod -- ls /                         # Run command in existing pod (1 container case)
-kubectl exec --stdin --tty my-pod -- /bin/sh        # Interactive shell access to a running pod (1 container case) 
-kubectl exec my-pod -c my-container -- ls /         # Run command in existing pod (multi-container case)
-kubectl top pod POD_NAME --containers               # Show metrics for a given pod and its containers
-kubectl top pod POD_NAME --sort-by=cpu              # Show metrics for a given pod and sort it by 'cpu' or 'memory'
+# dump pod logs, with label name=myLabel (stdout)
+kubectl logs -l name=myLabel                        
+
+# dump pod logs (stdout) for a previous instantiation of a container
+kubectl logs my-pod --previous                      
+
+# dump pod container logs (stdout, multi-container case)
+kubectl logs my-pod -c my-container                 
+
+# dump pod logs, with label name=myLabel (stdout)
+kubectl logs -l name=myLabel -c my-container        
+
+# dump pod container logs (stdout, multi-container case) for a previous instantiation of a container
+kubectl logs my-pod -c my-container --previous      
+
+# stream pod logs (stdout)
+kubectl logs -f my-pod                              
+
+# stream pod container logs (stdout, multi-container case)
+kubectl logs -f my-pod -c my-container              
+
+# stream all pods logs with label name=myLabel (stdout)
+kubectl logs -f -l name=myLabel --all-containers    
+
+# Run pod as interactive shell
+kubectl run -i --tty busybox --image=busybox -- sh  
+
+# Run pod nginx in a specific namespace
+kubectl run nginx --image=nginx -n mynamespace      
+
+# Run pod nginx and write its spec into a file called pod.yaml
+kubectl run nginx --image=nginx --dry-run=client -o yaml > pod.yaml                  
+
+# Attach to Running Container
+kubectl attach my-pod -i                            
+
+# Listen on port 5000 on the local machine and forward to port 6000 on my-pod
+kubectl port-forward my-pod 5000:6000               
+
+# Run command in existing pod (1 container case)
+kubectl exec my-pod -- ls /                         
+
+# Interactive shell access to a running pod (1 container case)
+kubectl exec --stdin --tty my-pod -- /bin/sh         
+
+# Run command in existing pod (multi-container case)
+kubectl exec my-pod -c my-container -- ls /         
+
+# Show metrics for a given pod and its containers
+kubectl top pod POD_NAME --containers               
+
+# Show metrics for a given pod and sort it by 'cpu' or 'memory'
+kubectl top pod POD_NAME --sort-by=cpu              
 ```
 ## Interacting With Deployments and Services
 ```
-kubectl logs deploy/my-deployment                         # dump Pod logs for a Deployment (single-container case)
-kubectl logs deploy/my-deployment -c my-container         # dump Pod logs for a Deployment (multi-container case)
+# dump Pod logs for a Deployment (single-container case)
+kubectl logs deploy/my-deployment                         
 
-kubectl port-forward svc/my-service 5000                  # listen on local port 5000 and forward to port 5000 on Service backend
-kubectl port-forward svc/my-service 5000:my-service-port  # listen on local port 5000 and forward to Service target port with name <my-service-port>
+# dump Pod logs for a Deployment (multi-container case)
+kubectl logs deploy/my-deployment -c my-container         
 
-kubectl port-forward deploy/my-deployment 5000:6000       # listen on local port 5000 and forward to port 6000 on a Pod created by <my-deployment>
-kubectl exec deploy/my-deployment -- ls                   # run command in first Pod and first container in Deployment (single- or multi-container cases)
+# listen on local port 5000 and forward to port 5000 on Service backend
+kubectl port-forward svc/my-service 5000                  
+
+# listen on local port 5000 and forward to Service target port with name <my-service-port>
+kubectl port-forward svc/my-service 5000:my-service-port  
+
+# listen on local port 5000 and forward to port 6000 on a Pod created by <my-deployment>
+kubectl port-forward deploy/my-deployment 5000:6000       
+
+# run command in first Pod and first container in Deployment (single- or multi-container cases)
+kubectl exec deploy/my-deployment -- ls                   
 ```
 
 # CKAD Imperative Commands
