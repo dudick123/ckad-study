@@ -475,6 +475,10 @@ kubectl api-resources
 kubectl explain Secret.spec
 kubectl explain Secret --recursive
 
+# create a tls secret using files on the local system
+kubectl create secret tls test-tls --key="tls.key" --cert="tls.crt"
+
+
 ```
 
 ## 04 Mutli-Container Pods
