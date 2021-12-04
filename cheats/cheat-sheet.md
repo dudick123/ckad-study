@@ -676,11 +676,42 @@ spec:
 
 ## 05 Observability
 
+```
+## API/Manifest Info
+kubectl api-resources
+kubectl explain Pod.spec
+kubectl explain Pod.spec.containers.livenessProbe
+kubectl explain Pod.spec.containers.readinessProbe
+kubectl explain Pod --recursive
 
+# Liveness Probe -  Periodic probe of container service readiness. Container will be removed from service endpoints if the probe fails.
+# Readiness Probe -  Periodic probe of container liveness. Container will be restarted if the probe fails. Cannot be updated.
+# Caution: Liveness probes do not wait for readiness probes to succeed. If you want to wait before executing a liveness probe you should use initialDelaySeconds or a startupProbe.
+
+# Readiness Probe Example
+spec:
+  containers:
+  - image: bmuschko/nodejs-hello-world:1.0.0
+    name: hello-world
+    ports:
+    - name: nodejs-port
+      containerPort: 3000
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+    readinessProbe:
+      httpGet:
+        path: /
+        port: nodejs-port
+      initialDelaySeconds: 2
+      periodSeconds: 8
+
+```
 
 ## 06 - Pod Design
 ```
-Caution: Liveness probes do not wait for readiness probes to succeed. If you want to wait before executing a liveness probe you should use initialDelaySeconds or a startupProbe.
+
 ```
 
 
