@@ -475,9 +475,168 @@ kubectl api-resources
 kubectl explain Secret.spec
 kubectl explain Secret --recursive
 
+# get help
+kubectl create secret --help
+kubectl get secret --help
+
+# create secrets from literals be sure to use generic
+kubectl create secret generic db-secret --from-literal=DB_Host=sql01 --from-literal=DB_User=root --from-literal=DB_Password=password123
+
+# get secrets with data available to decode
+kubectl get secret db-secret -o yaml
+
+# decode the secret from base 64
+echo -n 'c3FsMDE=' | base64 --decode
+
+# encode the plain text secret into base64
+echo -n 'sql01' | base64
+
 # create a tls secret using files on the local system
 kubectl create secret tls test-tls --key="tls.key" --cert="tls.crt"
 
+# bringing secrets/configMaps in as env variables
+kubectl explain pod.spec.containers.envFrom
+```
+
+### Security Context
+```
+# Security Context id set at the pod or container level with the securityContext property like this:
+
+    securityContext:
+      runAsUser: 2000
+      allowPrivilegeEscalation: false
+
+  --OR--
+
+    securityContext:
+      capabilities:
+        add: ["NET_ADMIN", "SYS_TIME"]
+
+# find the user used to execute a process in a pod
+kubectl exec ubuntu-sleeper -- whoami
+
+```
+### Service Accounts
+```
+# get default service accounts
+kubectl get serviceaccounts
+
+# create a service account
+kubectl create serviceaccount build-robot
+
+# describe the new service account. 
+kubectl describe serviceaccount build-robot
+
+# there will be a mountable secret and token property
+Mountable secrets:   build-robot-token-jtmv2
+
+# describe that secret to view the token
+kubectl describe secret build-robot-token-jtmv2
+
+# add the service account name under the pod spec
+kubectl explain pod.spec.serviceAccountName
+
+spec:
+  serviceAccountName: build-robot
+
+# a read-only volume mount will be added to the container
+Volumes:
+  build-robot-token-jtmv2:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  dbuild-robot-token-jtmv2
+
+# at this path
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from dashboard-sa-token-jtmv2 (ro)
+
+```
+### Resource Limits
+```
+# Resource limits are expressed under the pods container spec. Resources contain both requests and limits
+
+kubectl explain pod.spec.containers.resources
+
+spec:
+  containers:
+  - image: nginx:1.18.0
+    name: nginx
+    resources:
+      requests:
+        cpu: "0.5"
+        memory: "512m"
+      limits:
+        cpu: "1"
+        memory: "1024m"
+
+```
+
+### Taint and Tolerations
+```
+Taints are placed on Nodes and tolerations are placed on Pods
+There are three taint effects: 1) NoSchedule - Pods will not be scheudle, 2) PreferNoSchedule - Will attmept not schedule, 3) NoExecute - New Pods will not be scheduled and existing Pods will be terminated
+kubectl taint node -h
+
+# Add a taint to a node
+kubectl taint nodes foo dedicated=special-user:NoSchedule
+
+# Remove a taint from a node
+kubectl taint nodes foo dedicated:NoSchedule-
+
+# tolerations are placed on the Pod
+kubectl explain pod.spec.tolerations
+
+```
+
+### Node Selectors
+```
+# NodeSelector is a selector which must be true for the pod to fit on a node.
+# Selector which must match a node's labels for the pod to be scheduled on
+# that node
+kubectl explain pod.spec.nodeSelector
+
+# The node must be labled first
+kubectl label nodes <node_name> diskType=ssd
+
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    imagePullPolicy: IfNotPresent
+  nodeSelector:
+    disktype: ssd
+
+```
+
+### Node Affinity
+```
+# Node affinity is conceptually similar to nodeSelector -- it allows you to constrain which nodes your pod is eligible to be scheduled on, based on labels on the node
+# There are currently two types of node affinity, called requiredDuringSchedulingIgnoredDuringExecution and preferredDuringSchedulingIgnoredDuringExecution
+
+# label a node
+kubectl label node node01 color=blue
+
+kubectl explain pod.spec.affinity
+
+# Pod spec would look like this
+spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: kubernetes.io/e2e-az-name
+            operator: In
+            values:
+            - e2e-az1
+            - e2e-az2
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 1
+        preference:
+          matchExpressions:
+          - key: another-node-label-key
+            operator: In
+            values:
+            - another-node-label-value
 
 ```
 
@@ -490,6 +649,28 @@ kubectl explain Pod.spec
 kubectl explain Pod.spec.containers
 kubectl explain Pod --recursive
 
+# Sidecar - Process logs through a common volume and send to centralized log agent
+# Adapter - Process logs through a common volume, standardize format and send to centralized log agent 
+# Amabassador - Firts Pod connects to second on localhost. Use second pod as a proxy to a service
+
+# Sidecar spec
+
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    volumeMounts:
+    - name: logs-vol
+      mountPath: /var/log/nginx
+  - name: sidecar
+    image: busybox
+    command: ["sh","-c","while true; do if [ \"$(cat /var/log/nginx/error.log | grep 'error')\" != \"\" ]; then echo 'Error discovered!'; fi; sleep 60; done"]
+    volumeMounts:
+    - name: logs-vol
+      mountPath: /var/log/nginx
+  volumes:
+  - name: logs-vol
+    emptyDir: {}
 ```
 
 
@@ -522,6 +703,11 @@ kubectl get pods -L region
 kubectl annotate pod labeled-pod on-call='8885551212'
 kubectl describe pod labeled-pod | grep -C 3 annotations
 kubectl delete -f 06-simple-pod-label.yaml
+
+kubectl get pod webapp-color -o yaml > web-app-green.yaml
+
+# Create a pod called httpd using the image httpd:alpine in the default namespace. Next, create a service of type ClusterIP by the same name (httpd). The target port for the service should be 80
+kubectl run httpd --image=httpd:alpine --port=80 --expose
 ```
 ### Deployments
 ```
