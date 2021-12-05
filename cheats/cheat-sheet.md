@@ -676,6 +676,7 @@ spec:
 
 ## 05 Observability
 
+### Liveness and Readiness Probes
 ```
 ## API/Manifest Info
 kubectl api-resources
@@ -687,6 +688,7 @@ kubectl explain Pod --recursive
 # Liveness Probe -  Periodic probe of container service readiness. Container will be removed from service endpoints if the probe fails.
 # Readiness Probe -  Periodic probe of container liveness. Container will be restarted if the probe fails. Cannot be updated.
 # Caution: Liveness probes do not wait for readiness probes to succeed. If you want to wait before executing a liveness probe you should use initialDelaySeconds or a startupProbe.
+# Probe Types: httpGet, tcpSocket, exec
 
 # Readiness Probe Example
 spec:
@@ -706,6 +708,41 @@ spec:
         port: nodejs-port
       initialDelaySeconds: 2
       periodSeconds: 8
+```
+
+### Logs
+```
+## API/Manifest Info
+kubectl logs --help
+# Print the logs for a container in a pod or specified resource. If the pod has only one container, the container name is optional.
+
+# Return snapshot logs from pod nginx with only one container
+kubectl logs nginx
+
+# Return snapshot logs from pod nginx with multi containers
+kubectl logs nginx --all-containers=true
+
+# Return snapshot logs from all containers in pods defined by label app=nginx
+kubectl logs -lapp=nginx --all-containers=true
+
+# Return snapshot of previous terminated ruby container logs from pod web-1
+kubectl logs -p -c ruby web-1
+
+# Begin streaming the logs of the ruby container in pod web-1
+kubectl logs -f -c ruby web-1
+
+# Begin streaming the logs from all containers in pods defined by label app=nginx
+kubectl logs -f -lapp=nginx --all-containers=true
+
+# Display only the most recent 20 lines of output in pod nginx
+kubectl logs --tail=20 nginx
+
+```
+
+### Monitoring and Debuggin Applications
+```
+kubectl top node
+kubectl top pod
 
 ```
 
