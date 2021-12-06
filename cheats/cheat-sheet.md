@@ -321,12 +321,18 @@ kubectl exec deploy/my-deployment -- ls
 ```
 kubectl api-resources
 kubectl get all --all-namespaces
+NAME                              SHORTNAMES 
+configmaps                        cm 
+cronjobs                          cj 
+daemonsets                        ds
+deployments                       deploy
+endpoints                         ep 
+namespaces                        ns 
+nodes                             no
+persistentvolumes                 pv
+pods                              po 
+services                          svc
 
-
-```
-
-### Creating a Manfiest From Scratch
-```
 # kubectl get help on all resources 
 kubectl --help
 
@@ -362,19 +368,13 @@ kubectl explain Pod.spec.volumes
 
 # for the Pod type, recursively list all fields
 kubectl explain Pod --recursive
-
-# create a deployment named web using the nginx image, using the dry run option and output the yaml to a file
-kubectl create deployment web --image=nginx --dry-run=client -o yaml > web.yaml
-
-# perform a dry run of the yaml file on the server
-kubectl apply -f web.yaml --server-dry-run 
-
-# perform a diff comparison of the current version and the yaml file
-kubectl diff -f web.yaml
 ```
 
 ## 01 Context Config
 ```
+# context setup
+# cluster, user and namespace
+
 # create a new context and use it
 kubectl config set-context challenge-context --user=admin --namespace=challenge --cluster=kubernetes-the-alta3-way
 kubectl config use-context challenge-context 
@@ -416,6 +416,47 @@ kubectl run hazelcast --image=hazelcast/hazelcast --restart=Never --port=5701 --
 kubectl run my-shell --rm -i --tty --image ubuntu -- bash
 
 kubectl run -i --tty --rm debug --image=busybox --restart=Never -- sh
+
+
+# Create a busybox pod (using kubectl command) that runs the command "env". Run it and see the output
+kubectl run busybox --image=busybox --command --restart=Never -it -- env
+
+#Create a busybox pod (using YAML) that runs the command "env". Run it and see the output
+kubectl run busybox --image=busybox --restart=Never --dry-run=client -o yaml --command -- env > envpod.yaml
+
+# Get the YAML for a new namespace called 'myns' without creating it
+kubectl create namespace myns -o yaml --dry-run=client
+
+# Get the YAML for a new ResourceQuota called 'myrq' with hard limits of 1 CPU, 1G memory and 2 pods without creating it
+kubectl create quota myrq --hard=cpu=1,memory=1G,pods=2 --dry-run=client -o yaml
+
+# Create a pod with image nginx called nginx and expose traffic on port 80
+kubectl run nginx --image=nginx --restart=Never --port=80
+
+# Change pod's image to nginx:1.7.1. 
+kubectl set image pod/nginx nginx=nginx:1.7.1
+
+# Get nginx pod's ip created in previous step, use a temp busybox image to wget its '/'
+kubectl get po -o wide
+kubectl run busybox --image=busybox --rm -it --restart=Never -- wget -O- 10.1.1.131:80
+
+# Get pod's YAML
+kubectl get po nginx -o yaml
+
+# Get information about the pod, including details about potential issues
+kubectl describe po nginx
+
+# If pod crashed and restarted, get logs about the previous instance
+kubectl logs nginx -p
+
+# Create a busybox pod that echoes 'hello world' and then exits
+kubectl run busybox --image=busybox -it --restart=Never -- echo 'hello world'
+kubectl run busybox --image=busybox -it --restart=Never -- /bin/sh -c 'echo hello world'
+
+# Create an nginx pod and set an env value as 'var1=val1'. Check the env value existence within the pod'
+kubectl run nginx --image=nginx --restart=Never --env=var1=val1
+kubectl exec -it nginx -- env
+
 ```
 ### Namespaces
 namespace alias: ns
@@ -799,7 +840,7 @@ kubectl get deployment my-deploy
 kubectl get deployments -l 'app=my-deploy' -L app --show-labels
 kubectl describe deployment my-deploy
 kubectl get deployments,pods,replicasets --show-labels
-kubectl get deployments,pods,replicasets -l 'app=my-deploy' --show-labels
+servicekubectl get deployments,pods,replicasets -l 'app=my-deploy' --show-labels
 kubectl get deployments,pods,replicasets -l 'app=my-deploy' -L App --show-labels
 kubectl rollout history deployment my-deploy
 kubectl set image deployment my-deploy nginx=nginx:1.19.2
