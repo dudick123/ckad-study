@@ -712,6 +712,63 @@ spec:
   volumes:
   - name: logs-vol
     emptyDir: {}
+
+# Create a Pod with two containers, both with image busybox and command "echo hello; sleep 3600". Connect to the second container and run 'ls'
+kubectl run busybox --image=busybox --restart=Never -o yaml --dry-run=client -- /bin/sh -c 'echo hello;sleep 3600' > pod.yaml
+vi pod.yaml
+
+containers:
+  - args:
+    - /bin/sh
+    - -c
+    - echo hello;sleep 3600
+    image: busybox
+    imagePullPolicy: IfNotPresent
+    name: busybox
+    resources: {}
+  - args:
+    - /bin/sh
+    - -c
+    - echo hello;sleep 3600
+    image: busybox
+    name: busybox2
+
+kubectl exec -it busybox -c busybox2 -- /bin/sh
+ls
+exit
+
+# Creat an nginx container and an init container and share a common volume
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: box
+  name: box
+spec:
+  initContainers: 
+  - args: 
+    - /bin/sh 
+    - -c 
+    - wget -O /work-dir/index.html http://neverssl.com/online 
+    image: busybox 
+    name: box 
+    volumeMounts: 
+    - name: vol 
+      mountPath: /work-dir 
+  containers:
+  - image: nginx
+    name: nginx
+    ports:
+    - containerPort: 80
+    volumeMounts: 
+    - name: vol 
+      mountPath: /usr/share/nginx/html 
+  volumes: 
+  - name: vol 
+    emptyDir: {} 
+
+# Exec to a temporary container to run commands
+kubectl run box-test --image=busybox --restart=Never -it --rm -- /bin/sh
 ```
 
 
