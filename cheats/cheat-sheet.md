@@ -848,8 +848,6 @@ kubectl top pod
 ```
 
 ```
-
-
 ###  Labels and annotations
 
 ```
@@ -911,7 +909,7 @@ kubectl get pods -l 'app=my-deploy' -L app
 kubectl autoscale deployment my-deploy --cpu-percent=70 --min=2 --max=8
 kubectl get hpa
 kubectl describe hpa my-deploy
-```
+``` 
 
 ### Jobs and CronJobs
 ```
