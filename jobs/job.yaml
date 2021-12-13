@@ -1,0 +1,24 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  creationTimestamp: null
+  name: new-job
+spec:
+  completions: 3
+  parallelism: 2
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        id: awesome-job
+    spec:
+      containers:
+      - command:
+        - sh
+        - -c
+        - sleep 2 && echo done
+        image: busybox:1.31.0
+        name: new-job-container
+        resources: {}
+      restartPolicy: Never
+status: {}

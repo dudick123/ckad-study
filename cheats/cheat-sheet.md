@@ -277,7 +277,10 @@ kubectl run nginx --image=nginx --dry-run=client -o yaml > pod.yaml
 kubectl attach my-pod -i                            
 
 # Listen on port 5000 on the local machine and forward to port 6000 on my-pod
-kubectl port-forward my-pod 5000:6000               
+kubectl port-forward my-pod 5000:6000   
+
+# Create a temporary pod and use if to curl a service endpoing
+k run tmp --restart=Never --rm --image=nginx:alpine -i -- curl http://project-svc.pluto:3333
 
 # Run command in existing pod (1 container case)
 kubectl exec my-pod -- ls /                         
@@ -574,7 +577,7 @@ Mountable secrets:   build-robot-token-jtmv2
 # describe that secret to view the token
 kubectl describe secret build-robot-token-jtmv2
 
-# add the service account name under the pod spec
+# get the service account name under the pod spec
 kubectl explain pod.spec.serviceAccountName
 
 spec:
@@ -919,6 +922,10 @@ kubectl explain Job
 kubectl explain Job.spec
 kubectl explain Job --recursive
 
+# Create a job named with the busy box image and have it execute a command
+k create job new-job --image=busybox:1.31.0 -- sh -c "sleep 2 && echo done"
+k -n create job new-job --image=busybox:1.31.0 --dry-run=client -o yaml > /opt/course/3/job.yaml -- sh -c "sleep 2 && echo done"
+
 kubectl create job my-job --image=busybox --dry-run=client -o yaml > batch_job.yaml
 kubectl create cronjob alpine --schedule="* * * * *" --image=alpine -- sleep 10  --restart=OnFailure --dry-run=client -o yaml > cron_job.yaml
 ```
@@ -951,31 +958,35 @@ Network Policies cannot be created via declarative command.
 # Add the repository
 helm repo add bitnami https://charts.bitnami.com/bitnami
 
-# Search the respository for mysql
-helm search repo mysql
+# Search the respository for nginx
+helm search repo nginx
 
 # update information of available charts locally from the chart repository
 helm repo update
 
 # install a chart
-helm install bitnami/mysql --generate-name
+helm install bitnami/nginx --generate-name
 
 # pull the chart from the repo and untar it
-helm pull bitnami/mysql --untar
+helm pull bitnami/nginx --untar
 
 # install the chart using local files and path
-helm install -f myvalues.yaml myredis ./mysql
+helm install -f myvalues.yaml myredis ./nginx
 
 # list releases
 helm list
 
+# list releases including those that are in a pending status
+helm ls -a
+
 # uninstall the release
-helm uninstall mysql-1612624192
+helm uninstall nginx-1612624192
 
 # display the status of the named release
-helm status mysql-1612624192
+helm status nginx-1612624192
 
-helm get -h
+# get help
+helm -h
 ```
 
 

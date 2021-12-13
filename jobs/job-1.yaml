@@ -1,0 +1,18 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: pi
+spec:
+  completions: 3
+  parllelism: 2
+  template:
+    spec:
+      containers:
+      - name: new-job-container
+        image: busybox:1.31.0
+        command: 
+          - sh
+          - c
+          - sleep && echo done
+      restartPolicy: Never
+  backoffLimit: 4
