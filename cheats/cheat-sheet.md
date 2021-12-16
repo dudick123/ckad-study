@@ -516,6 +516,7 @@ kubectl create configmap db-config --from-file=02-config.txt -o yaml --dry-run=c
 ```
 ## API/Manifest Info
 kubectl api-resources
+kubectl create secret -h
 kubectl explain Secret.spec
 kubectl explain Secret --recursive
 
