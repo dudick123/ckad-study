@@ -55,6 +55,13 @@ kubectl create cronjob hello --image=busybox   --schedule="*/1 * * * *" -- echo 
 kubectl explain pods                           
 
 ```
+# Create a temp busybox pod and connect via wget to foo service
+kubectl run busybox --image=busybox -it --rm --restart=Never -- sh
+## Creating Temporary Containers For Testing
+```
+
+
+```
 
 ## Viewing and Finding Resources
 ```
@@ -962,11 +969,32 @@ helm repo add bitnami https://charts.bitnami.com/bitnami
 # Search the respository for nginx
 helm search repo nginx
 
+# Search the respository for nginx and show the versions
+helm search repo nginx --versions
+
 # update information of available charts locally from the chart repository
 helm repo update
 
 # install a chart
 helm install bitnami/nginx --generate-name
+
+# inspect the default values stored in the chart:
+helm show values kiamol/vweb --version 1.0.0
+
+# install the chart, overriding the default values:
+helm install --set servicePort=8010 --set replicaCount=1 ch10-vweb kiamol/vweb --version 1.0.0
+
+# check the releases you have installed:
+helm ls
+
+# get the deployment history for a release
+helm history ch10-vweb
+
+# roll the release named ch10-vweb back to the previous version
+helm rollback ch10-vweb
+
+# roll the release named ch10-vweb back to revision #3
+helm rollback ch10-vweb 3
 
 # pull the chart from the repo and untar it
 helm pull bitnami/nginx --untar
