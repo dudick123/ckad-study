@@ -1,0 +1,129 @@
+Question 10 | Service, Logs
+Task weight: 4%
+
+ 
+
+Team Pluto needs a new cluster internal Service. Create a ClusterIP Service named project-plt-6cc-svc in Namespace pluto. This Service should expose a single Pod named project-plt-6cc-api of image nginx:1.17.3-alpine, create that Pod as well. The Pod should be identified by label project: plt-6cc-api. The Service should use tcp port redirection of 3333:80.
+
+Finally use for example curl from a temporary nginx:alpine Pod to get the response from the Service. Write the response into /opt/course/10/service_test.html. Also check if the logs of Pod project-plt-6cc-api show the request and write those into /opt/course/10/service_test.log.
+
+ 
+
+Answer
+k -n pluto run project-plt-6cc-api --image=nginx:1.17.3-alpine --labels project=plt-6cc-api
+This will create the requested Pod. In yaml it would look like this:
+
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    project: plt-6cc-api
+  name: project-plt-6cc-api
+spec:
+  containers:
+  - image: nginx:1.17.3-alpine
+    name: project-plt-6cc-api
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
+Next we create the service:
+
+k -n pluto expose pod -h # help
+
+k -n pluto expose pod project-plt-6cc-api --name project-plt-6cc-svc --port 3333 --target-port 80
+Expose will create a yaml where everything is already set for our case and no need to change anything:
+
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    project: plt-6cc-api
+  name: project-plt-6cc-svc   # good
+  namespace: pluto            # great
+spec:
+  ports:
+  - port: 3333                # awesome
+    protocol: TCP
+    targetPort: 80            # nice
+  selector:
+    project: plt-6cc-api      # beautiful
+status:
+  loadBalancer: {}
+We could also use create service but then we would need to change the yaml afterwards:
+
+k -n pluto create service -h # help
+k -n pluto create service clusterip -h #help
+k -n pluto create service clusterip project-plt-6cc-svc --tcp 3333:80 $do
+# now we would need to set the correct selector labels
+Check the Service is running:
+
+➜ k -n pluto get pod,svc | grep 6cc
+pod/project-plt-6cc-api         1/1     Running   0          9m42s
+
+service/project-plt-6cc-svc   ClusterIP   10.31.241.234   <none>        3333/TCP   2m24s
+Does the Service has one Endpoint?
+
+➜ k -n pluto describe svc project-plt-6cc-svc
+Name:              project-plt-6cc-svc
+Namespace:         pluto
+Labels:            project=plt-6cc-api
+Annotations:       <none>
+Selector:          project=plt-6cc-api
+Type:              ClusterIP
+IP:                10.3.244.240
+Port:              <unset>  3333/TCP
+TargetPort:        80/TCP
+Endpoints:         10.28.2.32:80 
+Session Affinity:  None
+Events:            <none>
+Or even shorter:
+
+➜ k -n pluto get ep
+NAME                  ENDPOINTS       AGE
+project-plt-6cc-svc   10.28.2.32:80   84m
+Yes, endpoint there! Finally we check the connection using a temporary Pod:
+
+➜ k run tmp --restart=Never --rm --image=nginx:alpine -i -- curl http://project-plt-6cc-svc.pluto:3333
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   612  100   612    0     0  32210      0 --:--:-- --:--:-- --:--:-- 32210
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+    body {
+        width: 35em;
+        margin: 0 auto;
+        font-family: Tahoma, Verdana, Arial, sans-serif;
+    }
+</style>
+</head>
+<body>
+<h1>Welcome to nginx!</h1>
+...
+Great! Notice that we use the Kubernetes Namespace dns resolving (project-plt-6cc-svc.pluto) here. We could only use the Service name if we would also spin up the temporary Pod in Namespace pluto .
+
+And now really finally copy or pipe the html content into /opt/course/10/service_test.html.
+
+# /opt/course/10/service_test.html
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+    body {
+        width: 35em;
+        margin: 0 auto;
+        font-family: Tahoma, Verdana, Arial, sans-serif;
+    }
+...
+Also the requested logs:
+
+k -n pluto logs project-plt-6cc-api > /opt/course/10/service_test.log
+# /opt/course/10/service_test.log
+10.44.0.0 - - [22/Jan/2021:23:19:55 +0000] "GET / HTTP/1.1" 200 612 "-" "curl/7.69.1" "-"
+ 

@@ -1,0 +1,29 @@
+Question 1 | Namespaces
+Task weight: 1%
+
+ 
+
+The DevOps team would like to get the list of all Namespaces in the cluster. Get the list and save it to /opt/course/1/namespaces.
+
+ 
+
+Answer:
+k get ns > /opt/course/1/namespaces
+The content should then look like:
+
+# /opt/course/1/namespaces
+NAME           STATUS   AGE
+default        Active   150m
+earth          Active   76m
+jupiter        Active   76m
+kube-public    Active   150m
+kube-system    Active   150m
+mars           Active   76m
+mercury        Active   76m
+moon           Active   76m
+neptune        Active   76m
+pluto          Active   76m
+saturn         Active   76m
+shell-intern   Active   76m
+sun            Active   76m
+venus          Active   76m

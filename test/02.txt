@@ -1,0 +1,64 @@
+Question 2 | Pods
+Task weight: 2%
+
+ 
+
+Create a single Pod of image httpd:2.4.41-alpine in Namespace default. The Pod should be named pod1 and the container should be named pod1-container.
+
+Your manager would like to run a command manually on occasion to output the status of that exact Pod. Please write a command that does this into /opt/course/2/pod1-status-command.sh. The command should use kubectl.
+
+ 
+
+Answer:
+k run # help
+
+# check the export on the very top of this document so we can use $do
+k run pod1 --image=httpd:2.4.41-alpine $do > 2.yaml
+
+vim 2.yaml
+Change the container name in 2.yaml to pod1-container:
+
+# 2.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: pod1
+  name: pod1
+spec:
+  containers:
+  - image: httpd:2.4.41-alpine
+    name: pod1-container # change
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
+Then run:
+
+➜ k create -f 2.yaml
+pod/pod1 created
+
+➜ k get pod
+NAME   READY   STATUS              RESTARTS   AGE
+pod1   0/1     ContainerCreating   0          6s
+
+➜ k get pod
+NAME   READY   STATUS    RESTARTS   AGE
+pod1   1/1     Running   0          30s
+Next create the requested command:
+
+vim /opt/course/2/pod1-status-command.sh
+The content of the command file could look like:
+
+# /opt/course/2/pod1-status-command.sh
+kubectl -n default describe pod pod1 | grep -i status:
+Another solution would be using jsonpath:
+
+# /opt/course/2/pod1-status-command.sh
+kubectl -n default get pod pod1 -o jsonpath="{.status.phase}"
+To test the command:
+
+➜ sh /opt/course/2/pod1-status-command.sh
+Running
+ 

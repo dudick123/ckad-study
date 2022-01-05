@@ -1,0 +1,58 @@
+Question 13 | Storage, StorageClass, PVC
+Task weight: 6%
+
+ 
+
+Team Moonpie, which has the Namespace moon, needs more storage. Create a new PersistentVolumeClaim named moon-pvc-126 in that namespace. This claim should use a new StorageClass moon-retain with the provisioner set to moon-retainer and the reclaimPolicy set to Retain. The claim should request storage of 3Gi, an accessMode of ReadWriteOnce and should use the new StorageClass.
+
+The provisioner moon-retainer will be created by another team, so it's expected that the PVC will not boot yet. Confirm this by writing the log message from the PVC into file /opt/course/13/pvc-126-reason.
+
+ 
+
+Answer
+vim 13_sc.yaml
+Head to https://kubernetes.io/docs, search for "storageclass" and alter the example code to this:
+
+# 13_sc.yaml
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: moon-retain
+provisioner: moon-retainer
+reclaimPolicy: Retain
+k create -f 13_sc.yaml
+Now the same for the PersistentVolumeClaim, head to the docs, copy an example and transform it into:
+
+vim 13_pvc.yaml
+# 13_pvc.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: moon-pvc-126            # name as requested
+  namespace: moon               # important
+spec:
+  accessModes:
+    - ReadWriteOnce             # RWO
+  resources:
+    requests:
+      storage: 3Gi              # size
+  storageClassName: moon-retain # uses our new storage class
+k -f 13_pvc.yaml create
+Next we check the status of the PVC :
+
+➜ k -n moon get pvc
+NAME           STATUS    VOLUME   CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+moon-pvc-126   Pending                                      moon-retain    2m57s
+➜ k -n moon describe pvc moon-pvc-126
+Name:          moon-pvc-126
+...
+Status:        Pending
+...
+Events:
+...
+waiting for a volume to be created, either by external provisioner "moon-retainer" or manually created by system administrator
+This confirms that the PVC waits for the provisioner moon-retainer to be created. Finally we copy or write the event message into the requested location:
+
+# /opt/course/13/pvc-126-reason
+waiting for a volume to be created, either by external provisioner "moon-retainer" or manually created by system administrator
+ 

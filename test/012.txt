@@ -1,0 +1,106 @@
+Question 12 | Storage, PV, PVC, Pod volume
+Task weight: 8%
+
+ 
+
+Create a new PersistentVolume named earth-project-earthflower-pv. It should have a capacity of 2Gi, accessMode ReadWriteOnce, hostPath /Volumes/Data and no storageClassName defined.
+
+Next create a new PersistentVolumeClaim in Namespace earth named earth-project-earthflower-pvc . It should request 2Gi storage, accessMode ReadWriteOnce and should not define a storageClassName. The PVC should bound to the PV correctly.
+
+Finally create a new Deployment project-earthflower in Namespace earth which mounts that volume at /tmp/project-data. The Pods of that Deployment should be of image httpd:2.4.41-alpine.
+
+ 
+
+Answer
+vim 12_pv.yaml
+Find an example from https://kubernetes.io/docs and alter it:
+
+# 12_pv.yaml
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+ name: earth-project-earthflower-pv
+spec:
+ capacity:
+  storage: 2Gi
+ accessModes:
+  - ReadWriteOnce
+ hostPath:
+  path: "/Volumes/Data"
+Then create it:
+
+k -f 12_pv.yaml create
+Next the PersistentVolumeClaim:
+
+vim 12_pvc.yaml
+Find an example from https://kubernetes.io/docs and alter it:
+
+# 12_pvc.yaml
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: earth-project-earthflower-pvc
+  namespace: earth
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+     storage: 2Gi
+Then create:
+
+k -f 12_pvc.yaml create
+And check that both have the status Bound:
+
+➜ k -n earth get pv,pvc
+NAME                                 CAPACITY   ACCESS MODES   ...  STATUS   CLAIM 
+persistentvolume/...earthflower-pv   2Gi        RWO            ...  Bound    ...er-pvc
+
+NAME                                       STATUS   VOLUME                         CAPACITY
+persistentvolumeclaim/...earthflower-pvc   Bound    earth-project-earthflower-pv   2Gi
+Next we create a Deployment and mount that volume:
+
+k -n earth create deploy project-earthflower --image=httpd:2.4.41-alpine $do > 12_dep.yaml
+
+vim 12_dep.yaml
+Alter the yaml to mount the volume:
+
+# 12_dep.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: project-earthflower
+  name: project-earthflower
+  namespace: earth
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: project-earthflower
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: project-earthflower
+    spec:
+      volumes:                                      # add
+      - name: data                                  # add
+        persistentVolumeClaim:                      # add
+          claimName: earth-project-earthflower-pvc  # add
+      containers:
+      - image: httpd:2.4.41-alpine
+        name: container
+        volumeMounts:                               # add
+        - name: data                                # add
+          mountPath: /tmp/project-data              # add
+k -f 12_dep.yaml create
+We can confirm its mounting correctly:
+
+➜ k -n earth describe pod project-earthflower-d6887f7c5-pn5wv | grep -A2 Mounts:   
+    Mounts:
+      /tmp/project-data from data (rw) # there it is
+      /var/run/secrets/kubernetes.io/serviceaccount from default-token-n2sjj (ro)
+ 

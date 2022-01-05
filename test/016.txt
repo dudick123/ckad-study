@@ -1,0 +1,88 @@
+Question 16 | Logging sidecar
+Task weight: 6%
+
+ 
+
+The Tech Lead of Mercury2D decided its time for more logging, to finally fight all these missing data incidents. There is an existing container named cleaner-con in Deployment cleaner in Namespace mercury. This container mounts a volume and writes logs into a file called cleaner.log.
+
+The yaml for the existing Deployment is available at /opt/course/16/cleaner.yaml. Persist your changes at /opt/course/16/cleaner-new.yaml but also make sure the Deployment is running.
+
+Create a sidecar container named logger-con, image busybox:1.31.0 , which mounts the same volume and writes the content of cleaner.log to stdout, you can use the tail -f command for this. This way it can be picked up by kubectl logs.
+
+Check if the logs of the new container reveal something about the missing data incidents.
+
+ 
+
+Answer
+cp /opt/course/16/cleaner.yaml /opt/course/16/cleaner-new.yaml
+vim /opt/course/16/cleaner-new.yaml
+Add a sidecar container which outputs the log file to stdout:
+
+# /opt/course/16/cleaner-new.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  name: cleaner
+  namespace: mercury
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      id: cleaner
+  template:
+    metadata:
+      labels:
+        id: cleaner
+    spec:
+      volumes:
+      - name: logs
+        emptyDir: {}
+      initContainers:
+      - name: init
+        image: bash:5.0.11
+        command: ['bash', '-c', 'echo init > /var/log/cleaner/cleaner.log']
+        volumeMounts:
+        - name: logs
+          mountPath: /var/log/cleaner
+      containers:
+      - name: cleaner-con
+        image: bash:5.0.11
+        args: ['bash', '-c', 'while true; do echo `date`: "remove random file" >> /var/log/cleaner/cleaner.log; sleep 1; done']
+        volumeMounts:
+        - name: logs
+          mountPath: /var/log/cleaner
+      - name: logger-con                                                # add
+        image: busybox:1.31.0                                           # add
+        command: ["sh", "-c", "tail -f /var/log/cleaner/cleaner.log"]   # add
+        volumeMounts:                                                   # add
+        - name: logs                                                    # add
+          mountPath: /var/log/cleaner                                   # add
+Then apply the changes and check the logs of the sidecar:
+
+k -f /opt/course/16/cleaner-new.yaml apply
+This will cause a deployment rollout of which we can get more details:
+
+k -n mercury rollout history deploy cleaner
+k -n mercury rollout history deploy cleaner --revision 1
+k -n mercury rollout history deploy cleaner --revision 2
+Check Pod statuses:
+
+➜ k -n mercury get pod
+NAME                       READY   STATUS        RESTARTS   AGE
+cleaner-86b7758668-9pw6t   2/2     Running       0          6s
+cleaner-86b7758668-qgh4v   0/2     Init:0/1      0          1s
+
+➜ k -n mercury get pod
+NAME                       READY   STATUS        RESTARTS   AGE
+cleaner-86b7758668-9pw6t   2/2     Running       0          14s
+cleaner-86b7758668-qgh4v   2/2     Running       0          9s
+Finally check the logs of the logging sidecar container:
+
+➜ k -n mercury logs cleaner-576967576c-cqtgx -c logger-con
+init
+Wed Sep 11 10:45:44 UTC 2099: remove random file
+Wed Sep 11 10:45:45 UTC 2099: remove random file
+...
+Mystery solved, something is removing files at random ;) It's important to understand how containers can communicate with each other using volumes.
+

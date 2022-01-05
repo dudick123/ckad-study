@@ -1,0 +1,164 @@
+Preview Question 3
+Management of EarthAG recorded that one of their Services stopped working. Dirk, the administrator, left already for the long weekend. All the information they could give you is that it was located in Namespace earth and that it stopped working after the latest rollout. All Services of EarthAG should be reachable from inside the cluster.
+
+Find the Service, fix any issues and confirm its working again. Write the reason of the error into file /opt/course/p3/ticket-654.txt so Dirk knows what the issue was.
+
+Answer
+First we get an overview of the resources in Namespace earth:
+
+➜ k -n earth get all
+NAME                                          READY   STATUS    RESTARTS   AGE
+pod/earth-2x3-api-584df69757-ngnwp            1/1     Running   0          116m
+pod/earth-2x3-api-584df69757-ps8cs            1/1     Running   0          116m
+pod/earth-2x3-api-584df69757-ww9q8            1/1     Running   0          116m
+pod/earth-2x3-web-85c5b7986c-48vjt            1/1     Running   0          116m
+pod/earth-2x3-web-85c5b7986c-6mqmb            1/1     Running   0          116m
+pod/earth-2x3-web-85c5b7986c-6vjll            1/1     Running   0          116m
+pod/earth-2x3-web-85c5b7986c-fnkbp            1/1     Running   0          116m
+pod/earth-2x3-web-85c5b7986c-pjm5m            1/1     Running   0          116m
+pod/earth-2x3-web-85c5b7986c-pwfvj            1/1     Running   0          116m
+pod/earth-3cc-runner-6cb6cc6974-8wm5x         1/1     Running   0          116m
+pod/earth-3cc-runner-6cb6cc6974-9fx8b         1/1     Running   0          116m
+pod/earth-3cc-runner-6cb6cc6974-b9nrv         1/1     Running   0          116m
+pod/earth-3cc-runner-heavy-6bf876f46d-b47vq   1/1     Running   0          116m
+pod/earth-3cc-runner-heavy-6bf876f46d-mrzqd   1/1     Running   0          116m
+pod/earth-3cc-runner-heavy-6bf876f46d-qkd74   1/1     Running   0          116m
+pod/earth-3cc-web-6bfdf8b848-f74cj            0/1     Running   0          116m
+pod/earth-3cc-web-6bfdf8b848-n4z7z            0/1     Running   0          116m
+pod/earth-3cc-web-6bfdf8b848-rcmxs            0/1     Running   0          116m
+pod/earth-3cc-web-6bfdf8b848-xl467            0/1     Running   0          116m
+
+
+NAME                        TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE
+service/earth-2x3-api-svc   ClusterIP   10.3.241.242   <none>        4546/TCP   116m
+service/earth-2x3-web-svc   ClusterIP   10.3.250.247   <none>        4545/TCP   116m
+service/earth-3cc-web       ClusterIP   10.3.243.24    <none>        6363/TCP   116m
+
+
+NAME                                     READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/earth-2x3-api            3/3     3            3           116m
+deployment.apps/earth-2x3-web            6/6     6            6           116m
+deployment.apps/earth-3cc-runner         3/3     3            3           116m
+deployment.apps/earth-3cc-runner-heavy   3/3     3            3           116m
+deployment.apps/earth-3cc-web            0/4     4            0           116m
+
+NAME                                                DESIRED   CURRENT   READY   AGE
+replicaset.apps/earth-2x3-api-584df69757            3         3         3       116m
+replicaset.apps/earth-2x3-web-85c5b7986c            6         6         6       116m
+replicaset.apps/earth-3cc-runner-6cb6cc6974         3         3         3       116m
+replicaset.apps/earth-3cc-runner-heavy-6bf876f46d   3         3         3       116m
+replicaset.apps/earth-3cc-web-6895587dc7            0         0         0       116m
+replicaset.apps/earth-3cc-web-6bfdf8b848            4         4         0       116m
+replicaset.apps/earth-3cc-web-d49645966             0         0         0       116m
+First impression could be that all Pods are in status RUNNING. But looking closely we see that some of the Pods are not ready, which also confirms what we see about one Deployment and one replicaset. This could be our error to further investigate.
+
+Another approach could be to check the Services for missing endpoints:
+
+➜ k -n earth get ep
+NAME                ENDPOINTS                                           AGE
+earth-2x3-api-svc   10.0.0.10:80,10.0.1.5:80,10.0.2.4:80                116m
+earth-2x3-web-svc   10.0.0.11:80,10.0.0.12:80,10.0.1.6:80 + 3 more...   116m
+earth-3cc-web           
+Service earth-3cc-web doesn't have endpoints. This could be a selector/label misconfiguration or the endpoints are actually not available/ready.
+
+Checking all Services for connectivity should show the same (this step is optional and just for demonstration):
+
+➜ k run tmp --restart=Never --rm -i --image=nginx:alpine -- curl -m 5 earth-2x3-api-svc.earth:4546
+...
+<html><body><h1>It works!</h1></body></html>
+
+➜ k run tmp --restart=Never --rm -i --image=nginx:alpine -- curl -m 5 earth-2x3-web-svc.earth:4545
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100    45  100    45    0     0   5000      0 --:--:-- --:--:-- --:--:--  5000
+<html><body><h1>It works!</h1></body></html>
+
+➜ k run tmp --restart=Never --rm -i --image=nginx:alpine -- curl -m 5 earth-3cc-web.earth:6363
+If you don't see a command prompt, try pressing enter.
+  0     0    0     0    0     0      0      0 --:--:--  0:00:05 --:--:--     0
+curl: (28) Connection timed out after 5000 milliseconds
+pod "tmp" deleted
+pod default/tmp terminated (Error)
+Notice that we use here for example earth-2x3-api-svc.earth. We could also spin up a temporary Pod in Namespace earth and connect directly to earth-2x3-api-svc.
+
+We get no connection to earth-3cc-web.earth:6363. Let's look at the Deployment earth-3cc-web. Here we see that the requested amount of replicas is not available/ready:
+
+➜ k -n earth get deploy earth-3cc-web
+NAME            READY   UP-TO-DATE   AVAILABLE   AGE
+earth-3cc-web   0/4     4            0           7m18s
+To continue we check the Deployment yaml for some misconfiguration:
+
+k -n earth edit deploy earth-3cc-web
+# k -n earth edit deploy earth-3cc-web
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+...
+  generation: 3                     # there have been rollouts
+  name: earth-3cc-web
+  namespace: earth
+...
+spec:
+...
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        id: earth-3cc-web
+    spec:
+      containers:
+      - image: nginx:1.16.1-alpine
+        imagePullPolicy: IfNotPresent
+        name: nginx
+        readinessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 10
+          periodSeconds: 20
+          successThreshold: 1
+          tcpSocket:
+            port: 82                # this port doesn't seem to be right, should be 80
+          timeoutSeconds: 1
+...
+We change the readiness-probe port, save and check the Pods:
+
+➜ k -n earth get pod -l id=earth-3cc-web
+NAME                            READY   STATUS    RESTARTS   AGE
+earth-3cc-web-d49645966-52vb9   0/1     Running   0          6s
+earth-3cc-web-d49645966-5tts6   0/1     Running   0          6s
+earth-3cc-web-d49645966-db5gp   0/1     Running   0          6s
+earth-3cc-web-d49645966-mk7gr   0/1     Running   0          6s
+Running, but still not in ready state. Wait 10 seconds (initialDelaySeconds of readinessProbe) and check again:
+
+➜ k -n earth get pod -l id=earth-3cc-web
+NAME                            READY   STATUS    RESTARTS   AGE
+earth-3cc-web-d49645966-52vb9   1/1     Running   0          32s
+earth-3cc-web-d49645966-5tts6   1/1     Running   0          32s
+earth-3cc-web-d49645966-db5gp   1/1     Running   0          32s
+earth-3cc-web-d49645966-mk7gr   1/1     Running   0          32s
+Let's check the service again:
+
+➜ k run tmp --restart=Never --rm -i --image=nginx:alpine -- curl -m 5 earth-3cc-web.earth:6363
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   612  100   612    0     0  55636      0 --:--:-- --:--:-- --:--:-- 55636
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+    body {
+        width: 35em;
+        margin: 0 auto;
+        font-family: Tahoma, Verdana, Arial, sans-serif;
+    }
+</style>
+</head>
+<body>
+<h1>Welcome to nginx!</h1>
+...
+We did it! Finally we write the reason into the requested location:
+
+vim /opt/course/p3/ticket-654.txt
+# /opt/course/p3/ticket-654.txt
+yo Dirk, wrong port for readinessProbe defined!
+ 

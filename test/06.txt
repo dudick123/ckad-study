@@ -1,0 +1,66 @@
+Question 6 | ReadinessProbe
+Task weight: 7%
+
+ 
+
+Create a single Pod named pod6 in Namespace default of image busybox:1.31.0. The Pod should have a readiness-probe executing cat /tmp/ready. It should initially wait 5 and periodically wait 10 seconds. This will set the container ready only if the file /tmp/ready exists.
+
+The Pod should run the command touch /tmp/ready && sleep 1d, which will create the necessary file to be ready and then idles. Create the Pod and confirm it starts.
+
+ 
+
+Answer:
+k run pod6 --image=busybox:1.31.0 $do --command -- sh -c "touch /tmp/ready && sleep 1d" > 6.yaml
+
+vim 6.yaml
+Search for a readiness-probe example on https://kubernetes.io/docs, then copy and alter the relevant section for the task:
+
+# 6.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: pod6
+  name: pod6
+spec:
+  containers:
+  - args:
+    - sh
+    - -c
+    - touch /tmp/ready && sleep 1d
+    image: busybox:1.31.0
+    name: pod6
+    resources: {}
+    readinessProbe:                             # add
+      exec:                                     # add
+        command:                                # add
+        - sh                                    # add
+        - -c                                    # add
+        - cat /tmp/ready                        # add
+      initialDelaySeconds: 5                    # add
+      periodSeconds: 10                         # add
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
+Then:
+
+k -f 6.yaml create
+Running k get pod6 we should see the job being created and completed:
+
+➜ k get pod pod6
+NAME   READY   STATUS              RESTARTS   AGE
+pod6   0/1     ContainerCreating   0          2s
+
+➜ k get pod pod6
+NAME   READY   STATUS    RESTARTS   AGE
+pod6   0/1     Running   0          7s
+
+➜ k get pod pod6
+NAME   READY   STATUS    RESTARTS   AGE
+pod6   1/1     Running   0          15s
+We see that the Pod is finally ready.
+
+ 
+
+ 

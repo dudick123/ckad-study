@@ -1,0 +1,120 @@
+Question 18 | Service misconfiguration
+Task weight: 4%
+
+ 
+
+There seems to be an issue in Namespace mars where the ClusterIP service manager-api-svc should make the Pods of Deployment manager-api-deployment available inside the cluster.
+
+You can test this with curl manager-api-svc.mars:4444 from a temporary nginx:alpine Pod. Check for the misconfiguration and apply a fix.
+
+ 
+
+Answer
+First let's get an overview:
+
+➜ k -n mars get all
+NAME                                         READY   STATUS    RESTARTS   AGE
+pod/manager-api-deployment-dbcc6657d-bg2hh   1/1     Running   0          98m
+pod/manager-api-deployment-dbcc6657d-f5fv4   1/1     Running   0          98m
+pod/manager-api-deployment-dbcc6657d-httjv   1/1     Running   0          98m
+pod/manager-api-deployment-dbcc6657d-k98xn   1/1     Running   0          98m
+pod/test-init-container-5db7c99857-htx6b     1/1     Running   0          2m19s
+
+NAME                      TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+service/manager-api-svc   ClusterIP   10.15.241.159   <none>        4444/TCP   99m
+
+NAME                                     READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/manager-api-deployment   4/4     4            4           98m
+deployment.apps/test-init-container      1/1     1            1           2m19s
+...
+Everything seems to be running, but we can't seem to get a connection:
+
+➜ k -n mars run tmp --restart=Never --rm -i --image=nginx:alpine -- curl -m 5 manager-api-svc:4444
+If you don't see a command prompt, try pressing enter.
+  0     0    0     0    0     0      0      0 --:--:--  0:00:01 --:--:--     0
+curl: (28) Connection timed out after 1000 milliseconds
+pod "tmp" deleted
+pod mars/tmp terminated (Error)
+Ok, let's try to connect to one pod directly:
+
+k -n mars get pod -o wide # get cluster IP
+➜ k -n mars run tmp --restart=Never --rm -i --image=nginx:alpine -- curl -m 5 10.0.1.14
+ % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+...
+The Pods itself seem to work. Let's investigate the Service a bit:
+
+➜ k -n mars describe service manager-api-svc
+Name:              manager-api-svc
+Namespace:         mars
+Labels:            app=manager-api-svc
+...
+Endpoints:         <none>
+...
+Endpoint inspection is also possible using:
+
+k -n mars get ep
+No endpoints - No good. We check the Service yaml:
+
+k -n mars edit service manager-api-svc
+# k -n mars edit service manager-api-svc
+apiVersion: v1
+kind: Service
+metadata:
+...
+  labels:
+    app: manager-api-svc
+  name: manager-api-svc
+  namespace: mars
+...
+spec:
+  clusterIP: 10.3.244.121
+  ports:
+  - name: 4444-80
+    port: 4444
+    protocol: TCP
+    targetPort: 80
+  selector:
+    #id: manager-api-deployment # wrong selector, needs to point to pod!
+    id: manager-api-pod
+  sessionAffinity: None
+  type: ClusterIP
+Though Pods are usually never created without a Deployment or ReplicaSet, Services always select for Pods directly. This gives great flexibility because Pods could be created through various customized ways. After saving the new selector we check the Service again for endpoints:
+
+➜ k -n mars get ep
+NAME              ENDPOINTS                                               AGE
+manager-api-svc   10.0.0.30:80,10.0.1.30:80,10.0.1.31:80 + 1 more...      41m
+Endpoints - Good! Now we try connecting again:
+
+➜ k -n mars run tmp --restart=Never --rm -i --image=nginx:alpine -- curl -m 5 manager-api-svc:4444
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   612  100   612    0     0    99k      0 --:--:-- --:--:-- --:--:--   99k
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+...
+And we fixed it. Good to know is how to be able to use Kubernetes DNS resolution from a different Namespace. Not necessary, but we could spin up the temporary Pod in default Namespace:
+
+➜ k run tmp --restart=Never --rm -i --image=nginx:alpine -- curl -m 5 manager-api-svc:4444
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0curl: (6) Could not resolve host: manager-api-svc
+pod "tmp" deleted
+pod default/tmp terminated (Error)
+
+➜ k run tmp --restart=Never --rm -i --image=nginx:alpine -- curl -m 5 manager-api-svc.mars:4444
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   612  100   612    0     0  68000      0 --:--:-- --:--:-- --:--:-- 68000
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+Short manager-api-svc.mars or long manager-api-svc.mars.svc.cluster.local work.
+
+ 

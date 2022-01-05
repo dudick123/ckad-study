@@ -1,0 +1,103 @@
+Preview Question 2
+Team Sun needs a new Deployment named sunny with 4 replicas of image nginx:1.17.3-alpine in Namespace sun. The Deployment and its Pods should use the existing ServiceAccount sa-sun-deploy.
+
+Expose the Deployment internally using a ClusterIP Service named sun-srv on port 9999. The nginx containers should run as default on port 80. The management of Team Sun would like to execute a command to check that all Pods are running on occasion. Write that command into file /opt/course/p2/sunny_status_command.sh. The command should use kubectl.
+
+Answer
+k -n sun create deployment -h #help
+
+# check the export on the very top of this document so we can use $do
+k -n sun create deployment sunny --image=nginx:1.17.3-alpine $do > p2_sunny.yaml
+
+vim p2_sunny.yaml
+Then alter its yaml to include the requirements:
+
+# p2_sunny.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: sunny
+  name: sunny
+  namespace: sun
+spec:
+  replicas: 4                               # change
+  selector:
+    matchLabels:
+      app: sunny
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: sunny
+    spec:
+      serviceAccountName: sa-sun-deploy     # add
+      containers:
+      - image: nginx:1.17.3-alpine
+        name: nginx
+        resources: {}
+status: {}
+Now create the yaml and confirm its running:
+
+➜ k create -f p2_sunny.yaml 
+deployment.apps/sunny created
+
+➜ k -n sun get pod
+NAME                     READY   STATUS        RESTARTS   AGE
+0509649a                 1/1     Running       0          149m
+0509649b                 1/1     Running       0          149m
+1428721e                 1/1     Running       0          149m
+...
+sunny-64df8dbdbb-9mxbw   1/1     Running       0          10s
+sunny-64df8dbdbb-mp5cf   1/1     Running       0          10s
+sunny-64df8dbdbb-pggdf   1/1     Running       0          6s
+sunny-64df8dbdbb-zvqth   1/1     Running       0          7s
+Confirmed, the AGE column is always in important information about if changes were applied. Next we expose the Pods by created the Service:
+
+k -n sun expose -h # help
+k -n sun expose deployment sunny --name sun-srv --port 9999 --target-port 80
+Using expose instead of kubectl create service clusterip is faster because it already sets the correct selector-labels. The previous command would produce this yaml:
+
+# k -n sun expose deployment sunny --name sun-srv --port 9999 --target-port 80
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: sunny
+  name: sun-srv         # required by task
+spec:
+  ports:
+  - port: 9999          # service port
+    protocol: TCP
+    targetPort: 80      # target port
+  selector:
+    app: sunny          # selector is important
+status:
+  loadBalancer: {}
+Let's test the Service using wget from a temporary Pod:
+
+➜ k run tmp --restart=Never --rm -i --image=nginx:alpine -- curl -m 5 sun-srv.sun:9999
+Connecting to sun-srv.sun:9999 (10.23.253.120:9999)
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+...
+Because the Service is in a different Namespace as our temporary Pod, it is reachable using the names sun-srv.sun or fully: sun-srv.sun.svc.cluster.local.
+
+Finally we need a command which can be executed to check if all Pods are runing, this can be done with:
+
+vim /opt/course/p2/sunny_status_command.sh
+# /opt/course/p2/sunny_status_command.sh
+kubectl -n sun get deployment sunny
+To run the command:
+
+➜ sh /opt/course/p2/sunny_status_command.sh
+NAME    READY   UP-TO-DATE   AVAILABLE   AGE
+sunny   4/4     4            4           13m
+ 
+
+ 

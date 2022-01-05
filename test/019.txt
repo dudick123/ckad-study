@@ -1,0 +1,86 @@
+Question 19 | Service ClusterIP->NodePort
+Task weight: 3%
+
+ 
+
+In Namespace jupiter you'll find an apache Deployment (with one replica) named jupiter-crew-deploy and a ClusterIP Service called jupiter-crew-svc which exposes it. Change this service to a NodePort one to make it available on all nodes on port 30100.
+
+Test the NodePort Service using the internal IP of all available nodes and the port 30100 using curl, you can reach the internal node IPs directly from your main terminal. On which nodes is the Service reachable? On which node is the Pod running?
+
+ 
+
+Answer
+First we get an overview:
+
+➜ k -n jupiter get all
+NAME                                      READY   STATUS    RESTARTS   AGE
+pod/jupiter-crew-deploy-8cdf99bc9-klwqt   1/1     Running   0          34m
+
+NAME                       TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+service/jupiter-crew-svc   ClusterIP   10.100.254.66   <none>        8080/TCP   34m
+...
+(Optional) Next we check if the ClusterIP Service actually works:
+
+➜ k -n jupiter run tmp --restart=Never --rm -i --image=nginx:alpine -- curl -m 5 jupiter-crew-svc:8080
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100    45  100    45    0     0   5000      0 --:--:-- --:--:-- --:--:--  5000
+<html><body><h1>It works!</h1></body></html>
+The Service is working great. Next we change the Service type to NodePort and set the port:
+
+k -n jupiter edit service jupiter-crew-svc
+# k -n jupiter edit service jupiter-crew-svc
+apiVersion: v1
+kind: Service
+metadata:
+  name: jupiter-crew-svc
+  namespace: jupiter
+...
+spec:
+  clusterIP: 10.3.245.70
+  ports:
+  - name: 8080-80
+    port: 8080
+    protocol: TCP
+    targetPort: 80
+    nodePort: 30100 # add the nodePort
+  selector:
+    id: jupiter-crew
+  sessionAffinity: None
+  #type: ClusterIP
+  type: NodePort    # change type
+status:
+  loadBalancer: {}
+We check if the Service type was updated:
+
+➜ k -n jupiter get svc
+NAME               TYPE       CLUSTER-IP    EXTERNAL-IP   PORT(S)          AGE
+jupiter-crew-svc   NodePort   10.3.245.70   <none>        8080:30100/TCP   3m52s
+(Optional) And we confirm that the service is still reachable internally:
+
+➜ k -n jupiter run tmp --restart=Never --rm -i --image=nginx:alpine -- curl -m 5 jupiter-crew-svc:8080
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+<html><body><h1>It works!</h1></body></html>
+Nice. A NodePort Service kind of lies on top of a ClusterIP one, making the ClusterIP Service reachable on the Node IPs (internal and external). Next we get the internal IPs of all nodes to check the connectivity:
+
+➜ k get nodes -o wide
+NAME               STATUS   ROLES    AGE   VERSION   INTERNAL-IP      ...
+cluster1-master1   Ready    master   18h   v1.21.0   192.168.100.11   ...
+cluster1-worker1   Ready    <none>   18h   v1.21.0   192.168.100.12   ...
+On which nodes is the Service reachable?
+
+➜ curl 192.168.100.11:30100
+<html><body><h1>It works!</h1></body></html>
+
+➜ curl 192.168.100.12:30100
+<html><body><h1>It works!</h1></body></html>
+On both, even the master. On which node is the Pod running?
+
+➜ k -n jupiter get pod jupiter-crew-deploy-8cdf99bc9-klwqt -o yaml | grep nodeName
+    nodeName: cluster1-worker1
+    
+➜ k -n jupiter get pod -o wide # or even shorter
+In our case on cluster1-worker1, but could be any other worker if more available. Here we hopefully gained some insight into how a NodePort Service works. Although the Pod is just running on one specific node, the Service makes it available through port 30100 on the internal and external IP addresses of all nodes. This is at least the common/default behaviour but can depend on cluster configuration.
+
+ 

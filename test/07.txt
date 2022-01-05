@@ -1,0 +1,65 @@
+Question 7 | Pods, Namespaces
+Task weight: 4%
+
+ 
+
+The board of Team Neptune decided to take over control of one e-commerce webserver from Team Saturn. The administrator who once setup this webserver is not part of the organisation any longer. All information you could get was that the e-commerce system is called my-happy-shop.
+
+Search for the correct Pod in Namespace saturn and move it to Namespace neptune. It doesn't matter if you shut it down and spin it up again, it probably hasn't any customers anyways.
+
+ 
+
+Answer:
+Let's see all those Pods:
+
+➜ k -n saturn get pod
+NAME                READY   STATUS    RESTARTS   AGE
+webserver-sat-001   1/1     Running   0          111m
+webserver-sat-002   1/1     Running   0          111m
+webserver-sat-003   1/1     Running   0          111m
+webserver-sat-004   1/1     Running   0          111m
+webserver-sat-005   1/1     Running   0          111m
+webserver-sat-006   1/1     Running   0          111m
+The Pod names don't reveal any information. We assume the Pod we are searching has a label or annotation with the name my-happy-shop, so we search for it:
+
+k -n saturn describe pod # describe all pods, then manually look for it
+
+# or do some filtering like this
+k -n saturn get pod -o yaml | grep my-happy-shop -A10
+We see the webserver we're looking for is webserver-sat-003
+
+k -n saturn get pod webserver-sat-003 -o yaml > 7_webserver-sat-003.yaml # export
+vim 7_webserver-sat-003.yaml
+Change the Namespace to neptune, also remove the status: section, the token volume, the token volumeMount and the nodeName, else the new Pod won't start. The final file could look as clean like this:
+
+# 7_webserver-sat-003.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    description: this is the server for the E-Commerce System my-happy-shop
+  labels:
+    id: webserver-sat-003
+  name: webserver-sat-003
+  namespace: neptune # new namespace here
+spec:
+  containers:
+  - image: nginx:1.16.1-alpine
+    imagePullPolicy: IfNotPresent
+    name: webserver-sat
+  restartPolicy: Always
+Then we execute:
+
+k -n neptune create -f 7_webserver-sat-003.yaml
+➜ k -n neptune get pod | grep webserver
+webserver-sat-003               1/1     Running            0          22s
+It seems the server is running in Namespace neptune, so we can do:
+
+k -n saturn delete pod webserver-sat-003 --force --grace-period=0
+Let's confirm only one is running:
+
+➜ k get pod -A | grep webserver-sat-003
+neptune        webserver-sat-003         1/1     Running            0          6s
+This should list only one pod called webserver-sat-003 in Namespace neptune, status running.
+
+ 

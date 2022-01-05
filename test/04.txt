@@ -1,0 +1,130 @@
+Question 4 | Helm Management
+Task weight: 5%
+
+ 
+
+Team Mercury asked you to perform some operations using Helm, all in Namespace mercury:
+
+Delete release internal-issue-report-apiv1
+Upgrade release internal-issue-report-apiv2 to any newer version of chart bitnami/nginx available
+Install a new release internal-issue-report-apache of chart bitnami/apache. The Deployment should have two replicas, set these via Helm-values during install
+There seems to be a broken release, stuck in pending-upgrade state. Find it and delete it
+ 
+
+Answer:
+Helm Chart: Kubernetes YAML template-files combined into a single package, Values allow customisation
+
+Helm Release: Installed instance of a Chart
+
+Helm Values: Allow to customise the YAML template-files in a Chart when creating a Release
+
+ 
+
+1.
+
+First we should delete the required release:
+
+➜ helm -n mercury ls
+NAME                            NAMESPACE     STATUS          CHART           APP VERSION
+internal-issue-report-apiv1     mercury       deployed        nginx-9.5.0     1.21.1     
+internal-issue-report-apiv2     mercury       deployed        nginx-9.5.0     1.21.1     
+internal-issue-report-app       mercury       deployed        nginx-9.5.0     1.21.1  
+
+➜ helm -n mercury uninstall internal-issue-report-apiv1
+release "internal-issue-report-apiv1" uninstalled
+
+➜ helm -n mercury ls
+NAME                            NAMESPACE     STATUS          CHART           APP VERSION
+internal-issue-report-apiv2     mercury       deployed        nginx-9.5.0     1.21.1     
+internal-issue-report-app       mercury       deployed        nginx-9.5.0     1.21.1  
+ 
+
+2.
+
+Next we need to upgrade a release, for this we could first list the charts of the repo:
+
+➜ helm repo list
+NAME    URL                               
+bitnami https://charts.bitnami.com/bitnami
+
+➜ helm repo update
+Hang tight while we grab the latest from your chart repositories...
+...Successfully got an update from the "bitnami" chart repository
+Update Complete. ⎈Happy Helming!⎈
+
+➜ helm search repo nginx
+NAME                  CHART VERSION   APP VERSION     DESCRIPTION          
+bitnami/nginx         9.5.2           1.21.1          Chart for the nginx server             ...
+Here we see that a newer chart version 9.5.2 is available. But the task only requires us to upgrade to any newer chart version available, so we can simply run:
+
+➜ helm -n mercury upgrade internal-issue-report-apiv2 bitnami/nginx
+Release "internal-issue-report-apiv2" has been upgraded. Happy Helming!
+NAME: internal-issue-report-apiv2
+LAST DEPLOYED: Tue Aug 31 17:40:42 2021
+NAMESPACE: mercury
+STATUS: deployed
+REVISION: 2
+TEST SUITE: None
+...
+
+➜ helm -n mercury ls
+NAME                            NAMESPACE     STATUS          CHART           APP VERSION
+internal-issue-report-apiv2     mercury       deployed        nginx-9.5.2     1.21.1     
+internal-issue-report-app       mercury       deployed        nginx-9.5.0     1.21.1 
+Looking good!
+
+INFO: Also check out helm rollback for undoing a helm rollout/upgrade
+
+ 
+
+3.
+
+Now we're asked to install a new release, with a customised values setting. For this we first list all possible value settings for the chart, we can do this via:
+
+helm show values bitnami/apache # will show a long list of all possible value-settings
+
+helm show values bitnami/apache | yq e # parse yaml and show with colors
+Huge list, if we search in it we should find the setting replicaCount: 1 on top level. This means we can run:
+
+➜ helm -n mercury install internal-issue-report-apache bitnami/apache --set replicaCount=2
+NAME: internal-issue-report-apache
+LAST DEPLOYED: Tue Aug 31 17:57:23 2021
+NAMESPACE: mercury
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+...
+If we would also need to set a value on a deeper level, for example image.debug, we could run:
+
+helm -n mercury install internal-issue-report-apache bitnami/apache \
+  --set replicaCount=2 \
+  --set image.debug=true
+Install done, let's verify what we did:
+
+➜ helm -n mercury ls
+NAME                            NAMESPACE     STATUS          CHART           APP VERSION
+internal-issue-report-apache    mercury       deployed        apache-8.6.3    2.4.48
+...
+
+➜ k -n mercury get deploy internal-issue-report-apache
+NAME                           READY   UP-TO-DATE   AVAILABLE   AGE
+internal-issue-report-apache   2/2     2            2           96s
+We see a healthy deployment with two replicas!
+
+ 
+
+4.
+
+By default releases in pending-upgrade state aren't listed, but we can show all to find and delete the broken release:
+
+➜ helm -n mercury ls -a
+NAME                            NAMESPACE     STATUS          CHART           APP VERSION
+internal-issue-report-apache    mercury       deployed        apache-8.6.3    2.4.48     
+internal-issue-report-apiv2     mercury       deployed        nginx-9.5.2     1.21.1     
+internal-issue-report-app       mercury       deployed        nginx-9.5.0     1.21.1     
+internal-issue-report-daniel    mercury       pending-upgrade nginx-9.5.0     1.21.1 
+
+➜ helm -n mercury uninstall internal-issue-report-daniel
+release "internal-issue-report-daniel" uninstalled
+Thank you Helm for making our lifes easier! (Till something breaks)
+

@@ -1,0 +1,192 @@
+CKAD Tips Kubernetes 1.22
+In this section we'll provide some tips on how to handle the CKAD exam and browser terminal.
+
+ 
+
+Knowledge
+Study all topics as proposed in the curriculum till you feel comfortable with all
+Do these, maybe 2–3 times (using LATEST kubectl) https://github.com/dgkanatsios/CKAD-exercises
+We have a series with scenarios on Medium, do all of these. Also imagine and create your own ones.
+Read this and do all examples: https://kubernetes.io/docs/concepts/cluster-administration/logging
+Understand Rolling Update Deployment including maxSurge and maxUnavailable
+Do 1 or 2 test session with this CKAD Simulator. Understand the solutions and maybe try out other ways to achieve the same
+Setup your aliases, be fast and breath kubectl
+ 
+
+CKAD Preparation
+Read the Curriculum
+
+https://github.com/cncf/curriculum
+
+Read the Handbook
+
+https://docs.linuxfoundation.org/tc-docs/certification/lf-candidate-handbook
+
+Read the important tips
+
+https://docs.linuxfoundation.org/tc-docs/certification/tips-cka-and-ckad
+
+Read the FAQ
+
+https://docs.linuxfoundation.org/tc-docs/certification/faq-cka-ckad
+
+ 
+
+Kubernetes documentation
+Get familiar with the Kubernetes documentation and be able to use the search. You can have one browser tab open with one of the allowed links: https://kubernetes.io/docs https://github.com/kubernetes https://kubernetes.io/blog
+
+NOTE: You can have the other tab open as a separate window, this is why a big screen is handy
+
+ 
+
+Deprecated commands
+Make sure to not depend on deprecated commands as they might stop working at any time. When you execute a deprecated kubectl command a message will be shown, so you know which ones to avoid.
+
+With kubectl version 1.18 things have changed. Like its no longer possible to use kubectl run to create Jobs, CronJobs or Deployments, only Pods still work. This makes things a bit more verbose when you for example need to create a Deployment with resource limits or multiple replicas.
+
+What if we need to create a Deployment which has, for example, a resources section? We could use both kubectl run and kubectl create, then do some vim magic. Read more here.
+
+ 
+
+The Test Environment / Browser Terminal
+You'll be provided with a browser terminal which uses Ubuntu 20. The standard shells included with a minimal install of Ubuntu 20 will be available, including bash.
+
+Laggin
+
+There could be some lagging, definitely make sure you are using a good internet connection because your webcam and screen are uploading all the time.
+
+Kubectl autocompletion and commands
+
+Autocompletion is configured by default, as well as the k alias source and others:
+
+kubectl with k alias and Bash autocompletion
+
+yq and jqfor YAML/JSON processing
+
+tmux for terminal multiplexing
+
+curl and wget for testing web services
+
+man and man pages for further documentation
+
+Copy & Paste
+
+There could be issues copying text (like pod names) from the left task information into the terminal. Some suggested to "hard" hit or long hold Cmd/Ctrl+C a few times to take action. Apart from that copy and paste should just work like in normal terminals.
+
+Percentages and Score
+
+There are 15-20 questions in the exam and 100% of total percentage to reach. Each questions shows the % it gives if you solve it. Your results will be automatically checked according to the handbook. If you don't agree with the results you can request a review by contacting the Linux Foundation support.
+
+Notepad & Skipping Questions
+
+You have access to a simple notepad in the browser which can be used for storing any kind of plain text. It makes sense to use this for saving skipped question numbers and their percentages. This way it's possible to move some questions to the end. It might make sense to skip 2% or 3% questions and go directly to higher ones.
+
+Contexts
+
+You'll receive access to various different clusters and resources in each. They provide you the exact command you need to run to connect to another cluster/context. But you should be comfortable working in different namespaces with kubectl.
+
+ 
+
+Your Desktop
+You are allowed to have multiple monitors connected and have to share every monitor with the proctor. Having one large screen definitely helps as you’re only allowed one application open (Chrome Browser) with two tabs, one terminal and one k8s docs.
+
+NOTE: You can have the other tab open as a separate window, this is why a big screen is handy
+
+The questions will be on the left (default maybe ~30% space), the terminal on the right. You can adjust the size of the split though to your needs in the real exam.
+
+If you use a laptop you could work with lid closed, external mouse+keyboard+monitor attached. Make sure you also have a webcam+microphone working.
+
+You could also have both monitors, laptop screen and external, active. Though Chrome can only run on one screen. You might be asked that your webcam points straight into your face. So using an external screen and your laptop webcam could not be accepted. Just keep that in mind.
+
+You have to be able to move your webcam around in the beginning to show your whole room and desktop. Have a clean desk with only the necessary on it. You can have a glass/cup with water without anything printed on.
+
+In the end you should feel very comfortable with your setup.
+
+ 
+
+Browser Terminal Setup
+It should be considered to spend ~1 minute in the beginning to setup your terminal. In the real exam the vast majority of questions will be done from the main terminal. For few you might need to ssh into another machine. Just be aware that configurations to your shell will not be transferred in this case.
+
+Minimal Setup
+Alias
+
+The alias k for kubectl will be configured together with autocompletion. In case not you can configure it using this link.
+
+Vim
+
+Create the file ~/.vimrc with the following content:
+
+set tabstop=2
+set expandtab
+set shiftwidth=2
+The expandtab make sure to use spaces for tabs. Memorize these and just type them down. You can't have any written notes with commands on your desktop etc.
+
+Optional Setup
+Fast dry-run output
+
+export do="--dry-run=client -o yaml"
+This way you can just run k run pod1 --image=nginx $do. Short for "dry output", but use whatever name you like.
+
+Fast pod delete
+
+export now="--force --grace-period 0"
+This way you can run k delete pod1 $now and don't have to wait for ~30 seconds termination time.
+
+Persist bash settings
+
+You can store aliases and other setup in ~/.bashrc if you're planning on using different shells or tmux.
+
+Alias Namespace
+
+In addition you could define an alias like:
+
+alias kn='kubectl config set-context --current --namespace '
+Which allows you to define the default namespace of the current context. Then once you switch a context or namespace you can just run:
+
+kn default        # set default to default
+kn my-namespace   # set default to my-namespace
+But only do this if you used it before and are comfortable doing so. Else you need to specify the namespace for every call, which is also fine:
+
+k -n my-namespace get all
+k -n my-namespace get pod
+...
+ 
+
+Be fast
+Use the history command to reuse already entered commands or use even faster history search through Ctrl r .
+
+If a command takes some time to execute, like sometimes kubectl delete pod x. You can put a task in the background using Ctrl z and pull it back into foreground running command fg.
+
+You can delete pods fast with:
+
+k delete pod x --grace-period 0 --force
+
+k delete pod x $now # if export from above is configured
+ 
+
+Vim
+Be great with vim.
+
+toggle vim line numbers
+
+When in vim you can press Esc and type :set number or :set nonumber followed by Enter to toggle line numbers. This can be useful when finding syntax errors based on line - but can be bad when wanting to mark&copy by mouse. You can also just jump to a line number with Esc :22 + Enter.
+
+copy&paste
+
+Get used to copy/paste/cut with vim:
+
+Mark lines: Esc+V (then arrow keys)
+Copy marked lines: y
+Cut marked lines: d
+Past lines: p or P
+Indent multiple lines
+
+To indent multiple lines press Esc and type :set shiftwidth=2. First mark multiple lines using Shift v and the up/down keys. Then to indent the marked lines press > or <. You can then press . to repeat the action.
+
+ 
+
+Split terminal screen
+By default tmux is installed and can be used to split your one terminal into multiple. But just do this if you know your shit, because scrolling is different and copy&pasting might be weird.
+
+https://www.hamvocke.com/blog/a-quick-and-easy-guide-to-tmux
+
