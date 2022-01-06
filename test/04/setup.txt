@@ -1,0 +1,40 @@
+helm -n mercury ls
+
+helm install internal-issue-report-apiv1 bitnami/nginx --version 9.5.0 -n mercury
+helm install internal-issue-report-apiv2 bitnami/nginx --version 9.5.0 -n mercury
+helm install internal-issue-report-app bitnami/nginx --version 9.5.0 -n mercury
+
+helm install internal-issue-report-daniel ./nginx -n mercury
+
+# get installed charts in the mercury namespace
+helm -n mercury ls
+
+# delete a named installation in the mercury namespace
+helm -n mercury uninstall internal-issue-report-apiv1
+
+# get installed charts in the mercury namespace
+helm -n mercury ls
+
+# list installed repositories
+helm repo list
+
+# update installed repositories
+helm repo update
+
+# search installed repositories for a named chart
+helm search repo nginx
+
+# force an upgrade to a current, named release
+helm -n mercury upgrade internal-issue-report-apiv2 bitnami/nginx
+
+# for the named chart, show the values
+helm show values bitnami/apache 
+
+# install the release and override a template value
+helm -n mercury install internal-issue-report-apache bitnami/apache --set replicaCount=2
+
+# get installed releases in the mercury namespace, but show all statuses
+helm -n mercury ls -a
+
+# uninstall a named release
+helm -n mercury uninstall internal-issue-report-daniel
