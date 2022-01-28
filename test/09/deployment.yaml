@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    id: holy-api
+  name: holy-api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      id: holy-api
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        run: holy-api
+      name: holy-api
+    spec:
+      containers:
+      - image: nginx:1.17.3-alpine
+        name: holy-api
+        volumeMounts:
+        - mountPath: /cache1
+          name: cache-volume1
+        - mountPath: /cache2
+          name: cache-volume2
+        - mountPath: /cache3
+          name: cache-volume3
+      volumes:
+      - emptyDir: {}
+        name: cache-volume1
+      - emptyDir: {}
+        name: cache-volume2
+      - emptyDir: {}
+        name: cache-volume3

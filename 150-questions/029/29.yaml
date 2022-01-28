@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: multi-pod
+  name: multi-pod
+spec:
+  containers:
+  - args:
+    - /bin/sh
+    - -c
+    - ls;sleep 3600
+    image: busybox
+    name: multi-pod-01i
+    resources: {}
+  - args:
+    - /bin/sh
+    - -c
+    - sleep 3600
+    image: busybox
+    name: multi-pod-02
+  - args:
+    - /bin/sh
+    - -c
+    - echo 'this is the third container';sleep 3600
+    image: busybox
+    name: multi-pod-03
+
+  dnsPolicy: ClusterFirst
+  restartPolicy: Never
+status: {}

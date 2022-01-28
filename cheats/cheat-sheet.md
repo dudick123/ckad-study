@@ -1051,6 +1051,58 @@ helm status nginx-1612624192
 helm -h
 ```
 
+### Docker
+```
+# get running containers
+docker ps
+
+# get running containers
+docker container ls
+
+# list local images
+docker image ls
+
+# build an image in the current directory
+docker build -t bdudick/whoami:1.0.1 -t bdudick/whoami:latest .
+
+# push the image to the image repo
+docker push bdudick/whoami:1.0.1
+
+# run the image with a name in a detached context
+docker run -d --name electric-cowboy  bdudick/whoami:1.0.1
+
+# get the container logs from the named container
+docker logs electric-cowboy
+
+# get the logs from the container using the container id
+docker logs 55931b819c4f
+
+# build tagged images
+sudo docker build -t registry.killer.sh:5000/sun-cipher:latest -t registry.killer.sh:5000/sun-cipher:v1-docker .
+
+# list local images
+sudo docker image ls
+
+# push the tagged image to the repo
+sudo docker push registry.killer.sh:5000/sun-cipher:latest
+
+# push the tagged image to the repo
+sudo docker push registry.killer.sh:5000/sun-cipher:v1-docker
+
+# build the image using podman. substitute podman for docker
+podman build -t registry.killer.sh:5000/sun-cipher:v1-podman .
+
+# push the image to the repo
+podman push registry.killer.sh:5000/sun-cipher:v1-podman
+
+# run the image as a named container in a detached context
+podman run -d --name sun-cipher registry.killer.sh:5000/sun-cipher:v1-podman
+
+# get the logs from the container
+podman logs sun-cipher
+
+```
+
 
 
 

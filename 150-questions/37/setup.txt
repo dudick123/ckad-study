@@ -1,0 +1,5 @@
+k run webserver-sat-001 --image=nginx -l="env=prod" --restart=Never 
+k run webserver-sat-002 --image=nginx -l="env=prod" --restart=Never 
+k run webserver-sat-003 --image=nginx -l="id=my-happy-shop" --restart=Never 
+k run webserver-sat-004 --image=nginx -l="id=my-happy-3" --restart=Never 
+k run webserver-sat-005 --image=nginx -l="id=my-happy-4" --restart=Never 

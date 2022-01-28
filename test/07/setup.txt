@@ -1,0 +1,6 @@
+k run webserver-sat-001 -n saturn --image=nginx -l="id=my-happy-1" --restart=Never 
+k run webserver-sat-002 -n saturn --image=nginx -l="id=my-happy-2" --restart=Never 
+k run webserver-sat-003 -n saturn --image=nginx -l="id=my-happy-shop" --restart=Never 
+k run webserver-sat-004 -n saturn --image=nginx -l="id=my-happy-3" --restart=Never 
+k run webserver-sat-005 -n saturn --image=nginx -l="id=my-happy-4" --restart=Never 
+k run webserver-sat-006 -n saturn --image=nginx -l="id=my-happy-5" --restart=Never 

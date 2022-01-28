@@ -10,7 +10,8 @@ The Pod should run the command touch /tmp/ready && sleep 1d, which will create t
  
 
 Answer:
-k run pod6 --image=busybox:1.31.0 $do --command -- sh -c "touch /tmp/ready && sleep 1d" > 6.yaml
+k run pod6 --image=busybox:1.31.0 -o yaml --dry-run-cleint > /opt/course/3/job.yaml -- sh -c "sleep 2 && echo done"
+k run pod6 --image=busybox:1.31.0 -o yaml --dry-run-cleint --command -- sh -c "touch /tmp/ready && sleep 1d" > 6.yaml
 
 vim 6.yaml
 Search for a readiness-probe example on https://kubernetes.io/docs, then copy and alter the relevant section for the task:
