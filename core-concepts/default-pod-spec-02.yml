@@ -15,18 +15,29 @@ spec:
       httpGet:
         path: /
         port: nginx-port
+        scheme: HTTP
+        httpHeaders:
+        - name: X-Client-Identity
+          value: Kubernetes-Startup-Probe
+      periodSeconds: 10
     readinessProbe:
       httpGet:
         path: /
         port: nginx-port
-      initialDelaySeconds: 5
+      initialDelaySeconds: 15
     livenessProbe:
       httpGet:
         path: /
         port: nginx-port
-      initialDelaySeconds: 10
+      initialDelaySeconds: 15
       periodSeconds: 30
-    resources: {}
+    resources:
+      limits:
+        memory: "500Mi"
+        cpu: "1"
+      requests:
+        memory: "500Mi"
+        cpu: "1"       
   dnsPolicy: ClusterFirst
   # securityContext:
   #   allowPrivilegeEscalation: false
