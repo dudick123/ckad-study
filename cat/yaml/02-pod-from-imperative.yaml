@@ -1,0 +1,18 @@
+# k run nginx-pod --image=nginx --port=80 -o yaml --dry-run=client >> 02_pod_from_declarative.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: nginx-pod
+  name: nginx-pod
+spec:
+  containers:
+  - args:
+    image: nginx
+    name: nginx-pod
+    ports:
+    - containerPort: 80
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always

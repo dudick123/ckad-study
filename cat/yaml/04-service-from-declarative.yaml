@@ -1,0 +1,18 @@
+# kubectl expose deployment nginx-deploy --type=NodePort --name=nginx-service --port=8080 --target-port=80 --dry-run=client -o yaml > 04-service-from-imperative.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: nginx-deploy
+  name: nginx-service
+spec:
+  ports:
+  - port: 8080
+    protocol: TCP
+    targetPort: 80
+    nodePort: 32001
+  selector:
+    app: nginx-deploy
+  type: NodePort
+status:
+  loadBalancer: {}

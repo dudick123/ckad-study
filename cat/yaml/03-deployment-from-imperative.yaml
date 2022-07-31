@@ -1,0 +1,25 @@
+# kubectl create deployment my-deploy --image=nginx:1.22.0 -o yaml --dry-run=client > 03-simple-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: my-deploy
+  name: my-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-deploy
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: my-deploy
+    spec:
+      containers:
+      - image: nginx:1.22.0
+        name: nginx
+        resources: {}
+status: {}
